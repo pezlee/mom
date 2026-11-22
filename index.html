@@ -521,6 +521,7 @@
       <div class="btn-group">
         <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ Apps Script 雙向設定</button>
         <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
+        <button type="button" id="pushGsNowBtn" class="btn">⬆️ 寫回 Sheet</button>
         <button type="button" id="exportA4ImgBtn" class="btn btn-emerald">🖼️ 匯出 A4 圖片 (PNG)</button>
         <button type="button" id="printA4Btn" class="btn">🖨️ 直接列印 A4</button>
       </div>
@@ -533,9 +534,7 @@
       <div id="gsStatusText" style="font-weight:700;">☁️ 已連線至 Google Sheet｜即時讀取模式（Published CSV）｜最後同步：16:01:45（共 61 筆）</div>
     </div>
     <div class="btn-group">
-      <label style="font-size:12px; display:inline-flex; align-items:center; gap:4px; cursor:pointer;">
-        <input type="checkbox" id="autoPollToggle" checked=""> 每 15 秒自動同步
-      </label>
+      <span style="font-size:12px; color:#475569;">手動同步模式（需更新時請點「立即同步」）</span>
     </div>
   </div>
 
@@ -1175,19 +1174,53 @@
     <details style="font-size:12px; color:#334155; background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
       <summary style="cursor:pointer; font-weight:700;">進階：若需在網頁修改數值並反向寫回 Google Sheet（點此展開 Apps Script 程式碼）</summary>
       <div style="margin-top:8px;">
+        <p style="margin:0 0 8px 0; color:#475569;">
+          注意：若目前填入的是「發布到網路的 CSV（<code>/pub?output=csv</code>）」只能讀取；要將網頁編輯/新增的數值寫回 Google Sheet，必須貼上<strong>Apps Script 部署後的 <code>/exec</code> 網址</strong>，且部署時「誰可以存取」選<strong>所有人</strong>（每次改腳本都要建立「新版本」部署）。
+        </p>
         <button type="button" id="copyGasCodeBtn" class="btn btn-sm" style="margin-bottom:8px;">📋 複製 Apps Script 程式碼</button>
-        <pre id="gasCodeBlock" class="code-pre">function doGet() {
+        <pre id="gasCodeBlock" class="code-pre">function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   var data = sheet.getDataRange().getDisplayValues();
-  return ContentService.createTextOutput(JSON.stringify(data))
+  var payload = JSON.stringify(data);
+  if (e && e.parameter && e.parameter.callback) {
+    return ContentService.createTextOutput(e.parameter.callback + '(' + payload + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(payload)
     .setMimeType(ContentService.MimeType.JSON);
 }
+
 function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  var payload = JSON.parse(e.postData.contents);
-  sheet.clearContents();
-  sheet.getRange(1, 1, payload.rows.length, payload.rows[0].length).setValues(payload.rows);
-  return ContentService.createTextOutput("OK");
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var raw = (e && e.postData && e.postData.contents) ? e.postData.contents : '';
+    if (!raw && e && e.parameter && e.parameter.payload) {
+      raw = e.parameter.payload;
+    }
+    var parsed = JSON.parse(raw);
+    var rows = Array.isArray(parsed) ? parsed : (parsed.rows || []);
+    if (!rows.length) {
+      return ContentService.createTextOutput(JSON.stringify({ ok: false, error: '無可寫入的資料列' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    var maxCols = rows.reduce(function(m, r) { return Math.max(m, r.length); }, 1);
+    var normalized = rows.map(function(r) {
+      var copy = r.slice(0, maxCols);
+      while (copy.length < maxCols) copy.push('');
+      return copy;
+    });
+    sheet.clearContents();
+    sheet.getRange(1, 1, normalized.length, maxCols).setValues(normalized);
+    return ContentService.createTextOutput(JSON.stringify({ ok: true, count: normalized.length }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
 }</pre>
       </div>
     </details>
@@ -1234,7 +1267,6 @@ function doPost(e) {
   let startMonth = '';
   let endMonth = '';
   let chartMode = 'independent'; // 'independent' | 'combined' | 'all'
-  let pollTimer = null;
   let lastRemoteHash = '';
   let toastTimer = null;
 
@@ -1316,7 +1348,6 @@ function doPost(e) {
         const parsedGs = JSON.parse(savedGs);
         gsConfig = { ...gsConfig, ...parsedGs };
       }
-      // 若尚未設定或被清空，則沿用固定的預設 CSV 網址（DEFAULT_GS_URL）
       if (!gsConfig.url && DEFAULT_GS_URL) {
         gsConfig.url = DEFAULT_GS_URL;
       }
@@ -1346,7 +1377,6 @@ function doPost(e) {
     return /script\.google\.com\/macros\/s\//.test(String(url || ''));
   }
 
-  // 取得可用月份與篩選後資料
   function getAvailableMonths() {
     const set = new Set();
     records.forEach(r => {
@@ -1409,7 +1439,6 @@ function doPost(e) {
     return `${getRangeLabelText()} ${currentTitle}`;
   }
 
-  // 更新連線狀態橫幅
   function updateGsBannerUI() {
     const banner = document.getElementById('gsBanner');
     const textEl = document.getElementById('gsStatusText');
@@ -1426,7 +1455,6 @@ function doPost(e) {
     }
   }
 
-  // CSV 單行切分（支援引號逗號、Tab、連續空格）
   function splitDataLine(line) {
     if (line.includes(',')) {
       const out = [];
@@ -1452,7 +1480,6 @@ function doPost(e) {
     return line.trim().split(/\s+/);
   }
 
-  // 將二維表格轉成量測紀錄陣列
   function parseMatrixToRecords(matrix) {
     const list = [];
     for (const row of matrix) {
@@ -1483,7 +1510,6 @@ function doPost(e) {
     return `${rawUrl}${sep}_t=${Date.now()}`;
   }
 
-  // JSONP 備援讀取 Apps Script（避開部分瀏覽器/內嵌環境的 CORS 限制）
   function fetchAppsScriptJsonp(baseUrl, timeoutMs = 8000) {
     return new Promise((resolve, reject) => {
       const cbName = `__gsJsonpCb_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
@@ -1528,7 +1554,6 @@ function doPost(e) {
     });
   }
 
-  // 從 Google Sheet 抓取資料（支援 Published CSV 與 Apps Script JSON / JSONP 備援）
   async function pullFromGoogleSheet(silent = false) {
     if (!gsConfig.url) {
       if (!silent) showToast('請先設定 Google Sheet 連線網址', true);
@@ -1568,7 +1593,6 @@ function doPost(e) {
             matrix = trimmed.split(/\r?\n/).map(splitDataLine);
           }
         } catch (fetchErr) {
-          // 遇到 CORS 或重新導向限制時，改用 JSONP 備援
           const jsonpData = await fetchAppsScriptJsonp(gsConfig.url);
           matrix = Array.isArray(jsonpData) ? jsonpData : (jsonpData?.rows || []);
         }
@@ -1625,36 +1649,62 @@ function doPost(e) {
     }
   }
 
-  // 若為 Apps Script，支援雙向回寫
-  async function pushToAppsScript() {
-    if (!gsConfig.url || !isAppsScriptUrl(gsConfig.url)) return;
+  async function pushToAppsScript(manual = false) {
+    if (!gsConfig.url) {
+      if (manual) showToast('請先在「Apps Script 雙向設定」填入 /exec 網址', true);
+      return;
+    }
+    if (!isAppsScriptUrl(gsConfig.url)) {
+      if (manual) showToast('目前網址為唯讀 CSV 連結，請改用 Apps Script /exec 網址才能寫回', true);
+      return;
+    }
+    if (!records.length) {
+      if (manual) showToast('目前沒有可寫入的資料列', true);
+      return;
+    }
+
+    const pushBtn = document.getElementById('pushGsNowBtn');
+    if (pushBtn) {
+      pushBtn.disabled = true;
+      pushBtn.textContent = '寫回中...';
+    }
+
     const header = ['日期', '早收縮壓', '早舒張壓', '早脈搏', '早體溫', '早血氧', '晚收縮壓', '晚舒張壓', '晚脈搏', '晚體溫', '晚血氧'];
     const rows = [header, ...records.map(r => [
       r.date, r.amSbp ?? '', r.amDbp ?? '', r.amPulse ?? '', r.amTemp ?? '', r.amSpo2 ?? '',
       r.pmSbp ?? '', r.pmDbp ?? '', r.pmPulse ?? '', r.pmTemp ?? '', r.pmSpo2 ?? ''
     ])];
+
     try {
+      const jsonBody = JSON.stringify({ rows });
       await fetch(gsConfig.url, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ rows })
+        body: jsonBody
       });
+      lastRemoteHash = JSON.stringify(records);
+      const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+      const statusText = document.getElementById('gsStatusText');
+      if (statusText) {
+        statusText.textContent = `☁️ 已連線至 Google Sheet｜雙向同步模式（Apps Script）｜最後寫回：${nowStr}（共 ${records.length} 筆）`;
+      }
+      if (manual) {
+        showToast(`已送出 ${records.length} 筆資料寫回 Google Sheet`);
+      }
     } catch (e) {
       console.warn('回寫 Apps Script 失敗', e);
+      if (manual) {
+        showToast('寫回失敗：請確認 Apps Script /exec 網址與部署權限', true);
+      }
+    } finally {
+      if (pushBtn) {
+        pushBtn.disabled = false;
+        pushBtn.textContent = '⬆️ 寫回 Sheet';
+      }
     }
   }
 
-  function startAutoPoll() {
-    if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(() => {
-      if (gsConfig.url && gsConfig.autoPoll) {
-        pullFromGoogleSheet(true);
-      }
-    }, 15000);
-  }
-
-  // 統計計算
   function calcStats(list) {
     const avg = (arr) => {
       const valid = arr.filter(v => v !== null && v !== undefined);
@@ -1726,7 +1776,6 @@ function doPost(e) {
     `;
   }
 
-  // 原生高解析 Canvas 折線圖繪製引擎
   function setupHiDpiCanvas(canvas, width, height) {
     const dpr = Math.max(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * dpr);
@@ -1767,7 +1816,6 @@ function doPost(e) {
     const plotW = w - padLeft - padRight;
     const plotH = h - padTop - padBottom;
 
-    // 計算 Y 軸範圍
     let yMin = options.yMin ?? Infinity;
     let yMax = options.yMax ?? -Infinity;
     seriesList.forEach(s => {
@@ -1797,7 +1845,6 @@ function doPost(e) {
     };
     const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
 
-    // 格線與左軸刻度
     const steps = 5;
     ctx.font = '11px sans-serif';
     ctx.textAlign = 'right';
@@ -1816,7 +1863,6 @@ function doPost(e) {
       ctx.fillText(options.yDecimals ? val.toFixed(options.yDecimals) : Math.round(val), padLeft - 6, y);
     }
 
-    // 右軸（合併圖體溫專用）
     let getYRight = null;
     if (options.rightAxis) {
       const rMin = options.rMin ?? 35.5;
@@ -1831,7 +1877,6 @@ function doPost(e) {
       }
     }
 
-    // 警戒參考線
     (options.refLines || []).forEach(ref => {
       const y = getY(ref.value);
       if (y >= padTop && y <= padTop + plotH) {
@@ -1851,7 +1896,6 @@ function doPost(e) {
       }
     });
 
-    // X 軸日期刻度
     ctx.fillStyle = '#475569';
     ctx.font = '11px sans-serif';
     ctx.textAlign = 'center';
@@ -1865,7 +1909,6 @@ function doPost(e) {
       }
     });
 
-    // 繪製各條折線與超標紅點
     seriesList.forEach(s => {
       const yFn = s.axis === 'right' && getYRight ? getYRight : getY;
       ctx.save();
@@ -1891,7 +1934,6 @@ function doPost(e) {
       ctx.stroke();
       ctx.restore();
 
-      // 資料點（嚴格超標時改為較大紅點）
       s.data.forEach((v, idx) => {
         if (v === null || v === undefined) return;
         const over = s.alertLimit !== undefined && v > s.alertLimit;
@@ -1905,172 +1947,6 @@ function doPost(e) {
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.2;
           ctx.stroke();
-        }
-      });
-    });
-  }
-
-  // 專用：繪製 A4 列印/匯出用的「四項同圖」
-  // 規則：不含紅色虛線；血壓數值直接標示在線條對應點位旁；脈搏/體溫/血氧僅在超標時才顯示數值
-  function drawA4CombinedChart(canvas, filtered, width, height) {
-    if (!canvas) return;
-    const dpr = Math.max(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    const ctx = canvas.getContext('2d');
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    const w = width;
-    const h = height;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, w, h);
-
-    const labels = filtered.map(r => shortDateLabel(r.date));
-    if (!labels.length) {
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '14px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('尚無可繪製的量測數據', w / 2, h / 2);
-      return;
-    }
-
-    const padLeft = 48;
-    const padRight = 48;
-    const padTop = 24;
-    const padBottom = 34;
-    const plotW = w - padLeft - padRight;
-    const plotH = h - padTop - padBottom;
-
-    const yMin = 50;
-    const yMax = 165;
-    const rMin = 35.5;
-    const rMax = 38.0;
-
-    const getX = (idx) => {
-      if (labels.length === 1) return padLeft + plotW / 2;
-      return padLeft + (idx / (labels.length - 1)) * plotW;
-    };
-    const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
-    const getYRight = (val) => padTop + plotH - ((val - rMin) / (rMax - rMin)) * plotH;
-
-    // 左右軸格線與刻度（無紅色虛線）
-    const steps = 5;
-    ctx.font = '11px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-    ctx.textBaseline = 'middle';
-    for (let i = 0; i <= steps; i++) {
-      const val = yMin + ((yMax - yMin) * i) / steps;
-      const y = getY(val);
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(w - padRight, y);
-      ctx.stroke();
-
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#475569';
-      ctx.fillText(Math.round(val), padLeft - 6, y);
-
-      const rVal = rMin + ((rMax - rMin) * i) / steps;
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#d97706';
-      ctx.fillText(rVal.toFixed(1), w - padRight + 6, y);
-    }
-
-    // X 軸日期刻度
-    ctx.fillStyle = '#334155';
-    ctx.font = '11px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    const maxLabels = Math.max(4, Math.floor(plotW / 38));
-    const stepX = Math.max(1, Math.ceil(labels.length / maxLabels));
-    labels.forEach((lbl, idx) => {
-      if (idx % stepX === 0 || idx === labels.length - 1) {
-        ctx.fillText(lbl, getX(idx), padTop + plotH + 8);
-      }
-    });
-
-    const seriesList = [
-      { kind: 'bp', type: 'sbp', color: '#1d4ed8', dashed: false, data: filtered.map(r => r.amSbp), alertLimit: THRESHOLDS.sbp, labelDy: -10 },
-      { kind: 'bp', type: 'sbp', color: '#3b82f6', dashed: true, data: filtered.map(r => r.pmSbp), alertLimit: THRESHOLDS.sbp, labelDy: -10 },
-      { kind: 'bp', type: 'dbp', color: '#059669', dashed: false, data: filtered.map(r => r.amDbp), alertLimit: THRESHOLDS.dbp, labelDy: 11 },
-      { kind: 'bp', type: 'dbp', color: '#10b981', dashed: true, data: filtered.map(r => r.pmDbp), alertLimit: THRESHOLDS.dbp, labelDy: 11 },
-      { kind: 'pulse', color: '#7c3aed', dashed: false, data: filtered.map(r => r.amPulse), alertLimit: THRESHOLDS.pulse, labelDy: -10 },
-      { kind: 'pulse', color: '#a855f7', dashed: true, data: filtered.map(r => r.pmPulse), alertLimit: THRESHOLDS.pulse, labelDy: -10 },
-      { kind: 'spo2', color: '#0891b2', dashed: false, data: filtered.map(r => r.amSpo2), alertLimit: null, labelDy: -10 },
-      { kind: 'spo2', color: '#06b6d4', dashed: true, data: filtered.map(r => r.pmSpo2), alertLimit: null, labelDy: -10 },
-      { kind: 'temp', axis: 'right', color: '#d97706', dashed: false, data: filtered.map(r => r.amTemp), alertLimit: THRESHOLDS.temp, labelDy: -10 },
-      { kind: 'temp', axis: 'right', color: '#f59e0b', dashed: true, data: filtered.map(r => r.pmTemp), alertLimit: THRESHOLDS.temp, labelDy: -10 }
-    ];
-
-    // 繪製線條
-    seriesList.forEach(s => {
-      const yFn = s.axis === 'right' ? getYRight : getY;
-      ctx.save();
-      ctx.strokeStyle = s.color;
-      ctx.lineWidth = 1.9;
-      if (s.dashed) ctx.setLineDash([4, 3]);
-      ctx.beginPath();
-      let started = false;
-      s.data.forEach((v, idx) => {
-        if (v === null || v === undefined) {
-          started = false;
-          return;
-        }
-        const x = getX(idx);
-        const y = yFn(v);
-        if (!started) {
-          ctx.moveTo(x, y);
-          started = true;
-        } else {
-          ctx.lineTo(x, y);
-        }
-      });
-      ctx.stroke();
-      ctx.restore();
-    });
-
-    // 繪製點位與數值標籤：
-    // 1. 血壓數值一律標示在對應點位旁（超過門檻顯示紅字粗體）
-    // 2. 脈搏、體溫、血氧僅在超標時才顯示數值
-    seriesList.forEach(s => {
-      const yFn = s.axis === 'right' ? getYRight : getY;
-      s.data.forEach((v, idx) => {
-        if (v === null || v === undefined) return;
-        const isSpo2Over = s.kind === 'spo2' && v < 95;
-        const isOtherOver = s.alertLimit !== null && v > s.alertLimit;
-        const isOver = isOtherOver || isSpo2Over;
-
-        const shouldShowLabel = (s.kind === 'bp') || isOver;
-        if (!shouldShowLabel && !isOver) return;
-
-        const x = getX(idx);
-        const y = yFn(v);
-
-        if (s.kind === 'bp' || isOver) {
-          ctx.beginPath();
-          ctx.arc(x, y, isOver ? 4.2 : 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = isOver ? '#dc2626' : s.color;
-          ctx.fill();
-        }
-
-        if (shouldShowLabel) {
-          const text = s.kind === 'temp' ? Number(v).toFixed(1) : String(v);
-          ctx.save();
-          ctx.font = isOver
-            ? 'bold 9.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif'
-            : '8.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-
-          const ly = Math.max(padTop + 8, Math.min(padTop + plotH - 6, y + s.labelDy));
-          const tw = ctx.measureText(text).width;
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-          ctx.fillRect(x - tw / 2 - 1.5, ly - 5.5, tw + 3, 11);
-
-          ctx.fillStyle = isOver ? '#dc2626' : s.color;
-          ctx.fillText(text, x, ly);
-          ctx.restore();
         }
       });
     });
@@ -2154,7 +2030,6 @@ function doPost(e) {
     renderEditableTable(filtered);
   }
 
-  // 建立 A4 高解析列印 DOM（頂部四格區間平均摘要 + 上下兩張：早上四項同圖、晚上四項同圖，各自上方附早/晚平均摘要，無紅色虛線）
   function buildA4ReportElement() {
     const filtered = getFilteredRecords();
     const orientation = document.getElementById('a4OrientationSelect').value;
@@ -2238,7 +2113,6 @@ function doPost(e) {
     return { wrapper, pageW, pageH };
   }
 
-  // 計算早/晚區間平均摘要文字（血壓、脈搏、體溫、血氧）
   function buildSessionSummaryText(filtered, session) {
     const isAm = session === 'am';
     const avg = (arr) => {
@@ -2256,7 +2130,6 @@ function doPost(e) {
     return `平均血壓 ${sbpAvg}/${dbpAvg} mmHg ｜ 平均脈搏 ${pulseAvg} 次/分 ｜ 平均體溫 ${tempAvg} °C ｜ 平均血氧 ${spo2Avg} %`;
   }
 
-  // 繪製單一時段（am 或 pm）的四項同圖（無紅色虛線；血壓數值標示於點位旁；其他指標僅超標顯示；超標紅字粗體）
   function drawA4SessionCombinedChart(canvas, filtered, session, width, height) {
     if (!canvas) return;
     const isAm = session === 'am';
@@ -2299,7 +2172,6 @@ function doPost(e) {
     const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
     const getYRight = (val) => padTop + plotH - ((val - rMin) / (rMax - rMin)) * plotH;
 
-    // 格線與左右軸刻度（不含紅色虛線）
     const steps = 5;
     ctx.font = '10px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
     ctx.textBaseline = 'middle';
@@ -2323,7 +2195,6 @@ function doPost(e) {
       ctx.fillText(rVal.toFixed(1), w - padRight + 5, y);
     }
 
-    // X 軸日期刻度
     ctx.fillStyle = '#334155';
     ctx.font = '10px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
     ctx.textAlign = 'center';
@@ -2375,7 +2246,6 @@ function doPost(e) {
       }
     ];
 
-    // 繪製線條
     seriesList.forEach(s => {
       const yFn = s.axis === 'right' ? getYRight : getY;
       ctx.save();
@@ -2401,7 +2271,6 @@ function doPost(e) {
       ctx.restore();
     });
 
-    // 繪製點位與數值標籤：血壓數值標示於對應點位旁；脈搏/體溫/血氧僅在超標時才顯示數值
     seriesList.forEach(s => {
       const yFn = s.axis === 'right' ? getYRight : getY;
       s.data.forEach((v, idx) => {
@@ -2445,7 +2314,6 @@ function doPost(e) {
     });
   }
 
-  // 純原生 HTML5 Canvas 2D 直接繪製高解析 A4 圖片並觸發下載（頂部四格區間平均摘要 + 上下兩欄：早上/晚上四項同圖 + 各自上方區間平均摘要）
   function exportA4AsPng() {
     const filtered = getFilteredRecords();
     if (!filtered.length) {
@@ -2468,11 +2336,9 @@ function doPost(e) {
     const ctx = outCanvas.getContext('2d');
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
 
-    // 白底
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, pageW, pageH);
 
-    // 1. 頁首標題
     let curY = 16;
     ctx.fillStyle = '#0f172a';
     ctx.font = 'bold 18px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
@@ -2494,7 +2360,6 @@ function doPost(e) {
     ctx.stroke();
     curY += 8;
 
-    // 2. 兩張圖最上方新增四格區間平均摘要（同網頁版四項指標）
     const st = calcStats(filtered);
     const kpiBoxH = 42;
     const kpiGap = 8;
@@ -2527,7 +2392,6 @@ function doPost(e) {
 
     curY += kpiBoxH + 10;
 
-    // 3. 上下兩欄（早上 / 晚上）：每欄上方附該區間平均摘要，下方為四項同圖（無紅色虛線）
     const gapBetween = 10;
     const bottomMargin = 16;
     const totalAvailH = pageH - curY - bottomMargin;
@@ -2558,7 +2422,6 @@ function doPost(e) {
       ctx.drawImage(sessionCanvas, padX + 8, chartY, contentW - 16, chartH);
     });
 
-    // 觸發 PNG 下載
     try {
       outCanvas.toBlob((blob) => {
         if (!blob) {
@@ -2677,9 +2540,7 @@ function doPost(e) {
     setTimeout(() => window.print(), 120);
   }
 
-  // 綁定事件
   function bindEvents() {
-    // 開放直接編輯主標題並自動儲存
     const titleEl = document.getElementById('reportMainTitle');
     if (titleEl) {
       titleEl.addEventListener('blur', () => {
@@ -2695,7 +2556,6 @@ function doPost(e) {
       });
     }
 
-    // Google Sheet 設定彈窗
     const gsModal = document.getElementById('gsModal');
     document.getElementById('openGsModalBtn').addEventListener('click', () => {
       document.getElementById('gsUrlInput').value = gsConfig.url || '';
@@ -2724,11 +2584,7 @@ function doPost(e) {
       showToast(DEFAULT_GS_URL ? '已還原為預設 CSV 連線設定' : '已清除自訂連線設定');
     });
     document.getElementById('syncGsNowBtn').addEventListener('click', () => pullFromGoogleSheet(false));
-    document.getElementById('autoPollToggle').addEventListener('change', (e) => {
-      gsConfig.autoPoll = e.target.checked;
-      saveState(true);
-      showToast(gsConfig.autoPoll ? '已開啟每 15 秒自動同步' : '已暫停自動同步');
-    });
+    document.getElementById('pushGsNowBtn').addEventListener('click', () => pushToAppsScript(true));
     document.getElementById('copyGasCodeBtn').addEventListener('click', () => {
       const code = document.getElementById('gasCodeBlock').textContent;
       const ta = document.createElement('textarea');
@@ -2740,7 +2596,6 @@ function doPost(e) {
       showToast('已複製 Apps Script 程式碼');
     });
 
-    // 月份區間選擇
     document.getElementById('startMonthSelect').addEventListener('change', (e) => {
       startMonth = e.target.value;
       if (endMonth < startMonth) endMonth = startMonth;
@@ -2780,7 +2635,6 @@ function doPost(e) {
       showToast(`已顯示全部月份：${getRangeLabelText()}`);
     });
 
-    // 圖表三種模式切換
     document.getElementById('modeIndependentBtn').addEventListener('click', () => {
       chartMode = 'independent';
       refreshAll();
@@ -2797,11 +2651,9 @@ function doPost(e) {
       cb.addEventListener('change', () => renderAllCharts(getFilteredRecords()));
     });
 
-    // A4 匯出與列印
     document.getElementById('exportA4ImgBtn').addEventListener('click', exportA4AsPng);
     document.getElementById('printA4Btn').addEventListener('click', triggerPrintA4);
 
-    // 表格即時編輯與刪除
     document.getElementById('recordsTbody').addEventListener('change', (e) => {
       const target = e.target;
       if (!target.classList.contains('cell-input')) return;
@@ -2831,7 +2683,6 @@ function doPost(e) {
       showToast('已刪除該筆紀錄');
     });
 
-    // 新增一筆日期
     document.getElementById('addRowBtn').addEventListener('click', () => {
       const today = new Date();
       const dateStr = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`;
@@ -2847,7 +2698,6 @@ function doPost(e) {
       showToast(`已新增 ${dateStr} 空白列`);
     });
 
-    // 批次貼上資料彈窗
     const pasteModal = document.getElementById('pasteModal');
     document.getElementById('openPasteModalBtn').addEventListener('click', () => {
       document.getElementById('pasteTextarea').value = '';
@@ -2879,7 +2729,6 @@ function doPost(e) {
     document.getElementById('applyPasteMergeBtn').addEventListener('click', () => handlePasteImport(false));
     document.getElementById('applyPasteReplaceBtn').addEventListener('click', () => handlePasteImport(true));
 
-    // 匯出 CSV
     document.getElementById('exportCsvBtn').addEventListener('click', () => {
       const filtered = getFilteredRecords();
       if (!filtered.length) return showToast('尚無資料可匯出', true);
@@ -2901,7 +2750,6 @@ function doPost(e) {
     window.addEventListener('resize', () => renderAllCharts(getFilteredRecords()));
   }
 
-  // 初始化
   window.addEventListener('DOMContentLoaded', () => {
     loadInitialState();
     syncMonthSelectors(true);
@@ -2910,8 +2758,8 @@ function doPost(e) {
     if (gsConfig.url) {
       pullFromGoogleSheet(false);
     }
-    startAutoPoll();
   });
 </script>
 
-</body></html>
+</body>
+</html>
