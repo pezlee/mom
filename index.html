@@ -1,0 +1,2917 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>門診生理量測趨勢與 A4 報表工具</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+      margin-bottom: 16px;
+    }
+
+    .header-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    h1 {
+      margin: 6px 0 0 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      padding: 2px 6px;
+      margin-left: -6px;
+      border-radius: 8px;
+      border: 1px dashed transparent;
+      transition: all 0.15s ease;
+    }
+
+    h1[contenteditable="true"]:hover,
+    h1[contenteditable="true"]:focus {
+      border-color: #93c5fd;
+      background: #f8fafc;
+      outline: none;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #1e293b;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-emerald {
+      background: #059669;
+      border-color: #059669;
+      color: #ffffff;
+    }
+
+    .btn-emerald:hover {
+      background: #047857;
+      border-color: #047857;
+    }
+
+    .btn-danger {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #dc2626;
+    }
+
+    .btn-danger:hover {
+      background: #fee2e2;
+    }
+
+    .btn-active {
+      background: #0f172a !important;
+      border-color: #0f172a !important;
+      color: #ffffff !important;
+    }
+
+    /* Google Sheet 連線狀態橫幅 */
+    .sync-banner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+
+    .sync-banner.connected {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    .sync-banner.disconnected {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
+    /* 篩選與模式控制列 */
+    .controls-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    @media (min-width: 1080px) {
+      .controls-grid {
+        flex-wrap: nowrap;
+      }
+    }
+
+    .control-block {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .control-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .select-box {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: 13px;
+      font-weight: 600;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      font-size: 12px;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    .pill-red {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* KPI 統計卡片 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-main {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 6px 0 4px 0;
+      color: #0f172a;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    /* 圖表區 */
+    .charts-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0;
+      color: #0f172a;
+    }
+
+    .chart-sub {
+      font-size: 12px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 12px;
+      color: #334155;
+      align-items: center;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      margin-right: 4px;
+    }
+
+    .canvas-box {
+      position: relative;
+      width: 100%;
+      height: 270px;
+    }
+
+    .canvas-box.tall {
+      height: 340px;
+    }
+
+    canvas.chart-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 明細表格 */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: center;
+      min-width: 820px;
+    }
+
+    table.data-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      padding: 9px 6px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.data-table td {
+      padding: 5px 4px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    table.data-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .cell-input {
+      width: 60px;
+      padding: 4px 4px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      background: transparent;
+    }
+
+    .cell-input.date-input {
+      width: 92px;
+    }
+
+    .cell-input:hover,
+    .cell-input:focus {
+      border-color: #93c5fd;
+      background: #ffffff;
+      outline: none;
+    }
+
+    .val-alert {
+      color: #dc2626 !important;
+      background-color: #fef2f2 !important;
+      font-weight: 800 !important;
+      border-color: #fca5a5 !important;
+    }
+
+    /* 彈窗 Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    }
+
+    .code-pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      overflow-x: auto;
+      line-height: 1.45;
+    }
+
+    /* 提示訊息 Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.alert {
+      background: #dc2626;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* 列印專用區 */
+    #printMountArea {
+      display: none;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+      }
+      #appMain {
+        display: none !important;
+      }
+      #printMountArea {
+        display: block !important;
+      }
+      @page {
+        margin: 8mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="appMain" class="container">
+  <!-- 頁首 -->
+  <div class="card">
+    <div class="header-flex">
+      <div>
+        <span class="badge">☁️ Google Sheet 線上即時連動版</span>
+        <h1 id="reportMainTitle" contenteditable="true" spellcheck="false" title="點擊可直接編輯報表標題">血壓/脈搏/體溫/血氧濃度<span style="font-family: &quot;Noto Sans TC&quot;, &quot;PingFang TC&quot;, &quot;Microsoft JhengHei&quot;, -apple-system, BlinkMacSystemFont, sans-serif;">量測紀錄表</span></h1>
+      </div>
+      <div class="btn-group">
+        <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ Apps Script 雙向設定</button>
+        <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
+        <button type="button" id="exportA4ImgBtn" class="btn btn-emerald">🖼️ 匯出 A4 圖片 (PNG)</button>
+        <button type="button" id="printA4Btn" class="btn">🖨️ 直接列印 A4</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Sheet 連線狀態與開放編輯列 -->
+  <div id="gsBanner" class="sync-banner connected">
+    <div style="flex:1; min-width:260px;">
+      <div id="gsStatusText" style="font-weight:700;">☁️ 已連線至 Google Sheet｜即時讀取模式（Published CSV）｜最後同步：16:01:45（共 61 筆）</div>
+    </div>
+    <div class="btn-group">
+      <label style="font-size:12px; display:inline-flex; align-items:center; gap:4px; cursor:pointer;">
+        <input type="checkbox" id="autoPollToggle" checked=""> 每 15 秒自動同步
+      </label>
+    </div>
+  </div>
+
+  <!-- 檢視控制列 -->
+  <div class="card" style="padding: 12px 14px;">
+    <div class="controls-grid">
+      <!-- 月份區間選擇（最小單位 1 個月） -->
+      <div class="control-block">
+        <span class="control-label">月份區間：</span>
+        <select id="startMonthSelect" class="select-box" aria-label="起始月份"><option value="2026-09">2026年9月</option><option value="2026-10">2026年10月</option></select>
+        <span style="font-size:13px; color:#64748b;">至</span>
+        <select id="endMonthSelect" class="select-box" aria-label="結束月份"><option value="2026-09">2026年9月</option><option value="2026-10">2026年10月</option></select>
+        <button type="button" id="btnSingleMonth" class="btn btn-sm">單月</button>
+        <button type="button" id="btnThreeMonths" class="btn btn-sm">近三月</button>
+        <button type="button" id="btnAllMonths" class="btn btn-sm">全部</button>
+      </div>
+
+      <!-- 圖表呈現模式：獨立、合併、全部顯示 -->
+      <div class="control-block">
+        <span class="control-label">圖表模式：</span>
+        <button type="button" id="modeIndependentBtn" class="btn btn-sm">獨立</button>
+        <button type="button" id="modeCombinedBtn" class="btn btn-sm">合併</button>
+        <button type="button" id="modeAllBtn" class="btn btn-sm btn-active">全部顯示</button>
+      </div>
+
+      <!-- A4 方向設定（預設 A4 橫式） -->
+      <div class="control-block">
+        <span class="control-label">A4 方向：</span>
+        <select id="a4OrientationSelect" class="select-box" aria-label="A4 方向">
+          <option value="landscape" selected="">A4 橫式（推薦）</option>
+          <option value="portrait">A4 直式</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 紅字警戒條件說明 -->
+  <div class="legend-bar">
+    <strong>紅字警戒標示門檻（嚴格大於才亮紅字）：</strong>
+    <span class="pill-red">收縮壓 &gt; 140 mmHg</span>
+    <span class="pill-red">舒張壓 &gt; 90 mmHg</span>
+    <span class="pill-red">體溫 &gt; 37.0 °C</span>
+    <span class="pill-red">脈搏 &gt; 80 次/分</span>
+  </div>
+
+  <!-- 統計摘要卡片 -->
+  <div id="kpiGrid" class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均血壓 (mmHg)</span><span style="color:#dc2626">超標 2 次</span></div>
+        <div class="kpi-main" style="font-size:17px;">早 123.9/78.1 ｜ 晚 111.1/70.2</div>
+        <div class="kpi-sub">紅字門檻：收縮 &gt; 140 或 舒張 &gt; 90</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均脈搏 (次/分)</span><span style="color:#059669">超標 0 次</span></div>
+        <div class="kpi-main">早 64.2 ｜ 晚 59.2 次/分</div>
+        <div class="kpi-sub">區間最高：71 次/分（&gt; 80 標紅）</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均體溫 (°C)</span><span style="color:#059669">超標 0 次</span></div>
+        <div class="kpi-main">早 36.5 ｜ 晚 36.2 °C</div>
+        <div class="kpi-sub">區間最高：36.9 °C（&gt; 37.0 標紅）</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均血氧濃度 (%)</span><span>正常參考 ≥ 95%</span></div>
+        <div class="kpi-main">96.2 %</div>
+        <div class="kpi-sub">統計區間：2026年10月（共 31 天）</div>
+      </div>
+    </div>
+
+  <!-- 圖表展示區 -->
+  <div class="charts-stack">
+    <!-- 獨立圖表 1：血壓 -->
+    <div id="cardChartBP" class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h2 class="chart-title">1. 血壓趨勢（收縮壓 / 舒張壓）</h2>
+          <p class="chart-sub">紅色虛線為警戒門檻（收縮壓 140 / 舒張壓 90 mmHg），超標點自動標紅</p>
+        </div>
+        <div class="chart-legend">
+          <span><i class="legend-dot" style="background:#1d4ed8;"></i>早收縮</span>
+          <span><i class="legend-dot" style="background:#0284c7;"></i>晚收縮</span>
+          <span><i class="legend-dot" style="background:#059669;"></i>早舒張</span>
+          <span><i class="legend-dot" style="background:#0d9488;"></i>晚舒張</span>
+          <span><i class="legend-dot" style="background:#dc2626;"></i>超標紅點</span>
+        </div>
+      </div>
+      <div class="canvas-box">
+        <canvas id="canvasBP" class="chart-canvas" width="2428" height="540"></canvas>
+      </div>
+    </div>
+
+    <!-- 獨立圖表 2：脈搏 -->
+    <div id="cardChartPulse" class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h2 class="chart-title">2. 脈搏趨勢（早 / 晚心跳次數）</h2>
+          <p class="chart-sub">紅色虛線為 80 次/分警戒門檻（超過 80 標示紅點）</p>
+        </div>
+        <div class="chart-legend">
+          <span><i class="legend-dot" style="background:#7c3aed;"></i>早上脈搏</span>
+          <span><i class="legend-dot" style="background:#db2777;"></i>晚上脈搏</span>
+          <span><i class="legend-dot" style="background:#dc2626;"></i>&gt; 80 紅點</span>
+        </div>
+      </div>
+      <div class="canvas-box">
+        <canvas id="canvasPulse" class="chart-canvas" width="2428" height="540"></canvas>
+      </div>
+    </div>
+
+    <!-- 獨立圖表 3：體溫 -->
+    <div id="cardChartTemp" class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h2 class="chart-title">3. 體溫趨勢（早 / 晚體溫 °C）</h2>
+          <p class="chart-sub">紅色虛線為 37.0 °C 警戒門檻（超過 37.0 標示紅點）</p>
+        </div>
+        <div class="chart-legend">
+          <span><i class="legend-dot" style="background:#d97706;"></i>早上體溫</span>
+          <span><i class="legend-dot" style="background:#ea580c;"></i>晚上體溫</span>
+          <span><i class="legend-dot" style="background:#dc2626;"></i>&gt; 37.0 紅點</span>
+        </div>
+      </div>
+      <div class="canvas-box">
+        <canvas id="canvasTemp" class="chart-canvas" width="2428" height="540"></canvas>
+      </div>
+    </div>
+
+    <!-- 合併圖表：四項同圖 -->
+    <div id="cardChartCombined" class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h2 class="chart-title">四項生理指標整合趨勢（血壓 / 脈搏 / 血氧 / 體溫）</h2>
+          <p class="chart-sub">左軸：血壓、脈搏、血氧（50–165）｜右軸：體溫（35.5–38.0 °C）</p>
+        </div>
+        <div class="chart-legend">
+          <label><input type="checkbox" class="comb-toggle" value="bp" checked=""> 血壓</label>
+          <label><input type="checkbox" class="comb-toggle" value="pulse" checked=""> 脈搏</label>
+          <label><input type="checkbox" class="comb-toggle" value="spo2" checked=""> 血氧</label>
+          <label><input type="checkbox" class="comb-toggle" value="temp" checked=""> 體溫</label>
+        </div>
+      </div>
+      <div class="canvas-box tall">
+        <canvas id="canvasCombined" class="chart-canvas" width="2428" height="680"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 逐日量測明細表 -->
+  <div class="card">
+    <div class="header-flex" style="margin-bottom:12px;">
+      <div>
+        <h2 class="chart-title">逐日量測明細紀錄（可直接點擊修改）</h2>
+        <p id="tableRangeSummary" class="chart-sub">目前檢視區間：2026年10月（顯示 31 筆 / 總計 61 筆）</p>
+      </div>
+      <div class="btn-group">
+        <button type="button" id="addRowBtn" class="btn btn-sm btn-primary">＋ 新增一筆日期</button>
+        <button type="button" id="openPasteModalBtn" class="btn btn-sm">📋 批次貼上資料</button>
+        <button type="button" id="exportCsvBtn" class="btn btn-sm">⬇️ 匯出 CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>早收縮</th>
+            <th>早舒張</th>
+            <th>早脈搏</th>
+            <th>早體溫</th>
+            <th>早血氧</th>
+            <th>晚收縮</th>
+            <th>晚舒張</th>
+            <th>晚脈搏</th>
+            <th>晚體溫</th>
+            <th>晚血氧</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="recordsTbody">
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="30" data-field="date" value="2026/10/1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amSbp" value="118"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amDbp" value="72"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="30" data-field="amTemp" value="36.5"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmSbp" value="114"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmDbp" value="77"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmPulse" value="59"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="30" data-field="pmTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="30">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="31" data-field="date" value="2026/10/2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amSbp" value="126"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amDbp" value="73"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amPulse" value="69"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="31" data-field="amTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amSpo2" value="97"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmSbp" value="105"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmDbp" value="69"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmPulse" value="59"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="31" data-field="pmTemp" value="36.3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="31">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="32" data-field="date" value="2026/10/3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amSbp" value="109"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amDbp" value="74"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="32" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmSbp" value="108"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmDbp" value="73"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmPulse" value="66"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="32" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="32">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="33" data-field="date" value="2026/10/4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amSbp" value="130"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amDbp" value="82"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amPulse" value="68"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="33" data-field="amTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmSbp" value="126"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmDbp" value="79"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmPulse" value="60"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="33" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="33">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="34" data-field="date" value="2026/10/5"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amSbp" value="128"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amDbp" value="78"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amPulse" value="65"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="34" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmSbp" value="112"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmDbp" value="78"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="34" data-field="pmTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="34">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="35" data-field="date" value="2026/10/6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amSbp" value="136"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amDbp" value="83"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amPulse" value="68"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="35" data-field="amTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmSbp" value="89"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmDbp" value="57"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmPulse" value="60"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="35" data-field="pmTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="35">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="36" data-field="date" value="2026/10/7"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amSbp" value="128"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amDbp" value="80"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="36" data-field="amTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amSpo2" value="98"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmSbp" value="101"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmDbp" value="65"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmPulse" value="58"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="36" data-field="pmTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="36">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="37" data-field="date" value="2026/10/8"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amSbp" value="120"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amDbp" value="68"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amPulse" value="64"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="37" data-field="amTemp" value="36.5"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmSbp" value="108"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmDbp" value="65"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmPulse" value="53"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="37" data-field="pmTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="37">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="38" data-field="date" value="2026/10/9"></td>
+          <td><input type="number" step="1" class="cell-input val-alert" data-idx="38" data-field="amSbp" value="142"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amDbp" value="90"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amPulse" value="59"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="38" data-field="amTemp" value="36.8"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmSbp" value="121"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmDbp" value="75"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmPulse" value="55"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="38" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="38">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="39" data-field="date" value="2026/10/10"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amSbp" value="121"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amDbp" value="75"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amPulse" value="58"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="39" data-field="amTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmSbp" value="129"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmDbp" value="81"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmPulse" value="58"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="39" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="39">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="40" data-field="date" value="2026/10/11"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amSbp" value="123"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amPulse" value="66"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="40" data-field="amTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmSbp" value="112"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmDbp" value="73"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmPulse" value="56"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="40" data-field="pmTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="40">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="41" data-field="date" value="2026/10/12"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amSbp" value="110"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amDbp" value="78"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="41" data-field="amTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmSbp" value="103"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmDbp" value="64"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmPulse" value="66"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="41" data-field="pmTemp" value="36.3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="41">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="42" data-field="date" value="2026/10/13"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amSbp" value="138"></td>
+          <td><input type="number" step="1" class="cell-input val-alert" data-idx="42" data-field="amDbp" value="95"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amPulse" value="71"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="42" data-field="amTemp" value="36.8"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmSbp" value="114"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmDbp" value="69"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmPulse" value="56"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="42" data-field="pmTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="42">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="43" data-field="date" value="2026/10/14"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amSbp" value="120"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amDbp" value="73"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="43" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmSbp" value="124"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmDbp" value="82"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmPulse" value="68"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="43" data-field="pmTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="43">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="44" data-field="date" value="2026/10/15"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amSbp" value="113"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amDbp" value="74"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amPulse" value="60"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="44" data-field="amTemp" value="36.9"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmSbp" value="117"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmDbp" value="75"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmPulse" value="54"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="44" data-field="pmTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="44">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="45" data-field="date" value="2026/10/16"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amSbp" value="134"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amDbp" value="79"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amPulse" value="69"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="45" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmSbp" value="118"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmPulse" value="54"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="45" data-field="pmTemp" value="36.3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="45">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="46" data-field="date" value="2026/10/17"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amSbp" value="104"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amDbp" value="72"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amPulse" value="61"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="46" data-field="amTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmSbp" value="103"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmDbp" value="62"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmPulse" value="54"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="46" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="46">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="47" data-field="date" value="2026/10/18"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amSbp" value="124"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amDbp" value="79"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amPulse" value="60"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="47" data-field="amTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmSbp" value="122"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmDbp" value="74"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmPulse" value="60"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="47" data-field="pmTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="47">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="48" data-field="date" value="2026/10/19"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amSbp" value="138"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amDbp" value="85"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amPulse" value="64"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="48" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmSbp" value="124"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmDbp" value="80"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmPulse" value="58"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="48" data-field="pmTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="48">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="49" data-field="date" value="2026/10/20"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amSbp" value="126"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amDbp" value="77"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amPulse" value="71"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="49" data-field="amTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmSbp" value="90"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmDbp" value="57"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="49" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="49">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="50" data-field="date" value="2026/10/21"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amSbp" value="133"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amDbp" value="83"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amPulse" value="64"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="50" data-field="amTemp" value="36.7"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmSbp" value="100"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmDbp" value="61"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmPulse" value="66"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="50" data-field="pmTemp" value="36.5"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="50">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="51" data-field="date" value="2026/10/22"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amSbp" value="123"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amDbp" value="80"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="51" data-field="amTemp" value="36.7"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmSbp" value="126"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmPulse" value="63"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="51" data-field="pmTemp" value="36.2"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="51">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="52" data-field="date" value="2026/10/23"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amSbp" value="127"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amDbp" value="79"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="52" data-field="amTemp" value="36.7"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmSbp" value="97"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmDbp" value="65"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="52" data-field="pmTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="52">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="53" data-field="date" value="2026/10/24"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amSbp" value="118"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amDbp" value="69"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amPulse" value="58"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="53" data-field="amTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmSbp" value="122"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmPulse" value="54"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="53" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="53">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="54" data-field="date" value="2026/10/25"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amSbp" value="111"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amPulse" value="67"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="54" data-field="amTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmSbp" value="106"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmDbp" value="64"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmPulse" value="57"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="54" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="54">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="55" data-field="date" value="2026/10/26"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amSbp" value="129"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amDbp" value="83"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amPulse" value="65"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="55" data-field="amTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmSbp" value="101"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmDbp" value="64"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmPulse" value="62"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="55" data-field="pmTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="55">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="56" data-field="date" value="2026/10/27"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amSbp" value="127"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amDbp" value="81"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amPulse" value="67"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="56" data-field="amTemp" value="36.9"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmSbp" value="106"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmDbp" value="63"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmPulse" value="57"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="56" data-field="pmTemp" value="36.4"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="56">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="57" data-field="date" value="2026/10/28"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amSbp" value="120"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amDbp" value="78"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amPulse" value="59"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="57" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmSbp" value="102"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmDbp" value="65"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmPulse" value="67"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="57" data-field="pmTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmSpo2" value="97"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="57">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="58" data-field="date" value="2026/10/29"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amSbp" value="127"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amPulse" value="69"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="58" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmSbp" value="119"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmDbp" value="74"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmPulse" value="53"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="58" data-field="pmTemp" value="36.3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="58">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="59" data-field="date" value="2026/10/30"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amSbp" value="116"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amDbp" value="77"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amPulse" value="61"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="59" data-field="amTemp" value="36.3"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmSbp" value="104"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmDbp" value="66"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmPulse" value="59"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="59" data-field="pmTemp" value="36.1"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="59">刪除</button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="60" data-field="date" value="2026/10/31"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amSbp" value="123"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amDbp" value="76"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amPulse" value="69"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="60" data-field="amTemp" value="36.6"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amSpo2" value="96"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmSbp" value="121"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmDbp" value="72"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmPulse" value="57"></td>
+          <td><input type="number" step="0.1" class="cell-input" data-idx="60" data-field="pmTemp" value="36"></td>
+          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmSpo2" value="96"></td>
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="60">刪除</button></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 列印專用掛載區 -->
+<div id="printMountArea"></div>
+
+<!-- Google Sheet 連線設定彈窗 -->
+<div id="gsModal" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="header-flex" style="margin-bottom:12px;">
+      <h2 class="chart-title" style="font-size:18px;">☁️ Google Sheet 線上即時連動設定</h2>
+      <button type="button" id="closeGsModalBtn" class="btn btn-sm">✕ 關閉</button>
+    </div>
+    <p style="font-size:13px; color:#475569; margin-top:0;">
+      請貼上 Google 試算表「發布到網路（CSV 格式）」網址，或 Google Apps Script 部署的 <code>/exec</code> 網址：
+    </p>
+    <input type="text" id="gsUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../pub?output=csv" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:10px; font-size:13px; margin-bottom:12px;">
+    <div class="btn-group" style="margin-bottom:16px;">
+      <button type="button" id="saveGsUrlBtn" class="btn btn-primary">儲存並立即同步</button>
+      <button type="button" id="disconnectGsBtn" class="btn btn-danger">清除連線設定</button>
+    </div>
+    <details style="font-size:12px; color:#334155; background:#f8fafc; padding:12px; border-radius:10px; border:1px solid #e2e8f0;">
+      <summary style="cursor:pointer; font-weight:700;">進階：若需在網頁修改數值並反向寫回 Google Sheet（點此展開 Apps Script 程式碼）</summary>
+      <div style="margin-top:8px;">
+        <button type="button" id="copyGasCodeBtn" class="btn btn-sm" style="margin-bottom:8px;">📋 複製 Apps Script 程式碼</button>
+        <pre id="gasCodeBlock" class="code-pre">function doGet() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var data = sheet.getDataRange().getDisplayValues();
+  return ContentService.createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var payload = JSON.parse(e.postData.contents);
+  sheet.clearContents();
+  sheet.getRange(1, 1, payload.rows.length, payload.rows[0].length).setValues(payload.rows);
+  return ContentService.createTextOutput("OK");
+}</pre>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 批次貼上資料彈窗 -->
+<div id="pasteModal" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="header-flex" style="margin-bottom:12px;">
+      <h2 class="chart-title" style="font-size:18px;">📋 批次貼上量測資料</h2>
+      <button type="button" id="closePasteModalBtn" class="btn btn-sm">✕ 關閉</button>
+    </div>
+    <p style="font-size:13px; color:#475569; margin-top:0;">
+      支援直接從 Excel、Google Sheet 或純文字複製貼上（欄位順序：日期、早收縮、早舒張、早脈搏、早體溫、早血氧、晚收縮、晚舒張、晚脈搏、晚體溫、晚血氧）：
+    </p>
+    <textarea id="pasteTextarea" rows="10" placeholder="10/1	118	72	63	36.5	96	114	77	59	36.2	96" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:10px; font-size:13px; margin-bottom:12px;"></textarea>
+    <div class="btn-group">
+      <button type="button" id="applyPasteMergeBtn" class="btn btn-primary">合併更新至現有資料</button>
+      <button type="button" id="applyPasteReplaceBtn" class="btn btn-danger">覆蓋全部資料</button>
+    </div>
+  </div>
+</div>
+
+<!-- 提示訊息 Toast -->
+<div id="toast" class="toast">A4 高解析圖片已下載！</div>
+
+<script>
+  const STORAGE_RECORDS_KEY = 'clinic_vitals_online_records_v1';
+  const STORAGE_GS_KEY = 'clinic_vitals_gs_config_v1';
+  const STORAGE_TITLE_KEY = 'clinic_vitals_report_title_v1';
+  // 固定預設連動的 CSV / Google Sheet 網址：未調整時自動保留，不需每次重新輸入
+  const DEFAULT_GS_URL = '';
+  const THRESHOLDS = {
+    sbp: 140,
+    dbp: 90,
+    pulse: 80,
+    temp: 37.0
+  };
+
+  let records = [];
+  let gsConfig = { url: DEFAULT_GS_URL, autoPoll: true };
+  let reportTitle = '門診生理量測趨勢與 A4 報表工具';
+  let startMonth = '';
+  let endMonth = '';
+  let chartMode = 'independent'; // 'independent' | 'combined' | 'all'
+  let pollTimer = null;
+  let lastRemoteHash = '';
+  let toastTimer = null;
+
+  function showToast(msg, isAlert = false) {
+    const el = document.getElementById('toast');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = isAlert ? 'toast alert show' : 'toast show';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      el.classList.remove('show');
+    }, 3200);
+  }
+
+  function toNum(v) {
+    if (v === null || v === undefined || String(v).trim() === '') return null;
+    const n = parseFloat(String(v).trim());
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function isAlertVal(type, val) {
+    const n = toNum(val);
+    if (n === null) return false;
+    if (type === 'sbp') return n > THRESHOLDS.sbp;
+    if (type === 'dbp') return n > THRESHOLDS.dbp;
+    if (type === 'pulse') return n > THRESHOLDS.pulse;
+    if (type === 'temp') return n > THRESHOLDS.temp;
+    return false;
+  }
+
+  function normalizeDateStr(raw) {
+    const s = String(raw || '').trim().replace(/-/g, '/');
+    const ymd = s.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+    if (ymd) {
+      return `${ymd[1]}/${parseInt(ymd[2], 10)}/${parseInt(ymd[3], 10)}`;
+    }
+    const md = s.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (md) {
+      const year = new Date().getFullYear();
+      return `${year}/${parseInt(md[1], 10)}/${parseInt(md[2], 10)}`;
+    }
+    return s;
+  }
+
+  function getDateSortKey(dateStr) {
+    const norm = normalizeDateStr(dateStr);
+    const m = norm.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+    if (!m) return 0;
+    return parseInt(m[1], 10) * 10000 + parseInt(m[2], 10) * 100 + parseInt(m[3], 10);
+  }
+
+  function sortRecords(list) {
+    return [...list].sort((a, b) => getDateSortKey(a.date) - getDateSortKey(b.date));
+  }
+
+  function getMonthKey(dateStr) {
+    const norm = normalizeDateStr(dateStr);
+    const m = norm.match(/^(\d{4})\/(\d{1,2})\/\d{1,2}$/);
+    if (!m) return '未知月份';
+    return `${m[1]}-${String(parseInt(m[2], 10)).padStart(2, '0')}`;
+  }
+
+  function formatMonthLabel(monthKey) {
+    const m = String(monthKey || '').match(/^(\d{4})-(\d{2})$/);
+    if (!m) return monthKey;
+    return `${m[1]}年${parseInt(m[2], 10)}月`;
+  }
+
+  function loadInitialState() {
+    try {
+      const savedTitle = localStorage.getItem(STORAGE_TITLE_KEY);
+      if (savedTitle) {
+        reportTitle = savedTitle;
+        const titleEl = document.getElementById('reportMainTitle');
+        if (titleEl) titleEl.textContent = reportTitle;
+      }
+      const savedGs = localStorage.getItem(STORAGE_GS_KEY);
+      if (savedGs) {
+        const parsedGs = JSON.parse(savedGs);
+        gsConfig = { ...gsConfig, ...parsedGs };
+      }
+      // 若尚未設定或被清空，則沿用固定的預設 CSV 網址（DEFAULT_GS_URL）
+      if (!gsConfig.url && DEFAULT_GS_URL) {
+        gsConfig.url = DEFAULT_GS_URL;
+      }
+      const savedRecs = localStorage.getItem(STORAGE_RECORDS_KEY);
+      if (savedRecs) {
+        const parsed = JSON.parse(savedRecs);
+        if (Array.isArray(parsed)) records = sortRecords(parsed);
+      }
+    } catch (e) {
+      console.warn('讀取本機快取失敗', e);
+    }
+  }
+
+  function saveState(skipPush = false) {
+    try {
+      localStorage.setItem(STORAGE_RECORDS_KEY, JSON.stringify(records));
+      localStorage.setItem(STORAGE_GS_KEY, JSON.stringify(gsConfig));
+    } catch (e) {
+      console.warn('儲存快取失敗', e);
+    }
+    if (!skipPush && gsConfig.url && isAppsScriptUrl(gsConfig.url)) {
+      pushToAppsScript();
+    }
+  }
+
+  function isAppsScriptUrl(url) {
+    return /script\.google\.com\/macros\/s\//.test(String(url || ''));
+  }
+
+  // 取得可用月份與篩選後資料
+  function getAvailableMonths() {
+    const set = new Set();
+    records.forEach(r => {
+      const mk = getMonthKey(r.date);
+      if (mk !== '未知月份') set.add(mk);
+    });
+    return Array.from(set).sort();
+  }
+
+  function syncMonthSelectors(forceAll = false) {
+    const months = getAvailableMonths();
+    const startSel = document.getElementById('startMonthSelect');
+    const endSel = document.getElementById('endMonthSelect');
+    if (!startSel || !endSel) return;
+
+    if (months.length === 0) {
+      startSel.innerHTML = '<option value="">無資料</option>';
+      endSel.innerHTML = '<option value="">無資料</option>';
+      startMonth = '';
+      endMonth = '';
+      return;
+    }
+
+    const optsHtml = months.map(m => `<option value="${m}">${formatMonthLabel(m)}</option>`).join('');
+    startSel.innerHTML = optsHtml;
+    endSel.innerHTML = optsHtml;
+
+    if (forceAll || !startMonth || !months.includes(startMonth)) {
+      startMonth = months[0];
+    }
+    if (forceAll || !endMonth || !months.includes(endMonth)) {
+      endMonth = months[months.length - 1];
+    }
+    if (startMonth > endMonth) {
+      endMonth = startMonth;
+    }
+
+    startSel.value = startMonth;
+    endSel.value = endMonth;
+  }
+
+  function getFilteredRecords() {
+    if (!startMonth || !endMonth) return records;
+    return records.filter(r => {
+      const mk = getMonthKey(r.date);
+      if (mk === '未知月份') return true;
+      return mk >= startMonth && mk <= endMonth;
+    });
+  }
+
+  function getRangeLabelText() {
+    if (!startMonth || !endMonth) return '全部資料';
+    if (startMonth === endMonth) return formatMonthLabel(startMonth);
+    return `${formatMonthLabel(startMonth)} ～ ${formatMonthLabel(endMonth)}`;
+  }
+
+  function getA4ReportHeading() {
+    const titleEl = document.getElementById('reportMainTitle');
+    const currentTitle = (titleEl ? titleEl.textContent : reportTitle || '').trim() || '門診生理量測趨勢與 A4 報表工具';
+    return `${getRangeLabelText()} ${currentTitle}`;
+  }
+
+  // 更新連線狀態橫幅
+  function updateGsBannerUI() {
+    const banner = document.getElementById('gsBanner');
+    const textEl = document.getElementById('gsStatusText');
+    const toggle = document.getElementById('autoPollToggle');
+    if (toggle) toggle.checked = !!gsConfig.autoPoll;
+
+    if (gsConfig.url) {
+      banner.className = 'sync-banner connected';
+      const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式（Apps Script）' : '即時讀取模式（Published CSV）';
+      textEl.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}（網址已隱藏於雙向設定）｜目前共 ${records.length} 筆資料`;
+    } else {
+      banner.className = 'sync-banner disconnected';
+      textEl.textContent = '⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定';
+    }
+  }
+
+  // CSV 單行切分（支援引號逗號、Tab、連續空格）
+  function splitDataLine(line) {
+    if (line.includes(',')) {
+      const out = [];
+      let cur = '';
+      let inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          inQ = !inQ;
+        } else if (ch === ',' && !inQ) {
+          out.push(cur.trim());
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      out.push(cur.trim());
+      return out;
+    }
+    if (line.includes('\t')) {
+      return line.split('\t').map(s => s.trim());
+    }
+    return line.trim().split(/\s+/);
+  }
+
+  // 將二維表格轉成量測紀錄陣列
+  function parseMatrixToRecords(matrix) {
+    const list = [];
+    for (const row of matrix) {
+      if (!row || row.length < 3) continue;
+      const rawDate = String(row[0] || '').trim();
+      if (!rawDate || /日期|date/i.test(rawDate)) continue;
+      if (!/\d+\/\d+|\d+-\d+/.test(rawDate)) continue;
+
+      list.push({
+        date: normalizeDateStr(rawDate),
+        amSbp: toNum(row[1]),
+        amDbp: toNum(row[2]),
+        amPulse: toNum(row[3]),
+        amTemp: toNum(row[4]),
+        amSpo2: toNum(row[5]),
+        pmSbp: toNum(row[6]),
+        pmDbp: toNum(row[7]),
+        pmPulse: toNum(row[8]),
+        pmTemp: toNum(row[9]),
+        pmSpo2: toNum(row[10])
+      });
+    }
+    return sortRecords(list);
+  }
+
+  function buildNoCacheUrl(rawUrl) {
+    const sep = rawUrl.includes('?') ? '&' : '?';
+    return `${rawUrl}${sep}_t=${Date.now()}`;
+  }
+
+  // JSONP 備援讀取 Apps Script（避開部分瀏覽器/內嵌環境的 CORS 限制）
+  function fetchAppsScriptJsonp(baseUrl, timeoutMs = 8000) {
+    return new Promise((resolve, reject) => {
+      const cbName = `__gsJsonpCb_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+      const sep = baseUrl.includes('?') ? '&' : '?';
+      const script = document.createElement('script');
+      let settled = false;
+
+      const cleanup = () => {
+        if (script.parentNode) script.parentNode.removeChild(script);
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+      };
+
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          cleanup();
+          reject(new Error('JSONP 逾時'));
+        }
+      }, timeoutMs);
+
+      window[cbName] = (data) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          cleanup();
+          resolve(data);
+        }
+      };
+
+      script.src = `${baseUrl}${sep}callback=${encodeURIComponent(cbName)}&_t=${Date.now()}`;
+      script.async = true;
+      script.onerror = () => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          cleanup();
+          reject(new Error('JSONP 載入失敗'));
+        }
+      };
+
+      document.body.appendChild(script);
+    });
+  }
+
+  // 從 Google Sheet 抓取資料（支援 Published CSV 與 Apps Script JSON / JSONP 備援）
+  async function pullFromGoogleSheet(silent = false) {
+    if (!gsConfig.url) {
+      if (!silent) showToast('請先設定 Google Sheet 連線網址', true);
+      return;
+    }
+    const syncBtn = document.getElementById('syncGsNowBtn');
+    const statusText = document.getElementById('gsStatusText');
+    if (syncBtn) {
+      syncBtn.disabled = true;
+      syncBtn.textContent = '同步中...';
+    }
+
+    try {
+      let matrix = [];
+
+      if (isAppsScriptUrl(gsConfig.url)) {
+        try {
+          const res = await fetch(buildNoCacheUrl(gsConfig.url), {
+            cache: 'no-store',
+            redirect: 'follow'
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const buffer = await res.arrayBuffer();
+          let text = new TextDecoder('utf-8').decode(buffer);
+          if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+          const trimmed = text.trim();
+
+          if (trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html')) {
+            throw new Error('收到 Google 登入頁，請確認「誰可以存取」為「所有人」且已建立新版本部署');
+          }
+
+          if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+            const json = JSON.parse(trimmed);
+            matrix = Array.isArray(json) ? json : (json.rows || []);
+          } else {
+            matrix = trimmed.split(/\r?\n/).map(splitDataLine);
+          }
+        } catch (fetchErr) {
+          // 遇到 CORS 或重新導向限制時，改用 JSONP 備援
+          const jsonpData = await fetchAppsScriptJsonp(gsConfig.url);
+          matrix = Array.isArray(jsonpData) ? jsonpData : (jsonpData?.rows || []);
+        }
+      } else {
+        const res = await fetch(buildNoCacheUrl(gsConfig.url), { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const buffer = await res.arrayBuffer();
+        let text = new TextDecoder('utf-8').decode(buffer);
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+        const trimmed = text.trim();
+
+        if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+          const json = JSON.parse(trimmed);
+          matrix = Array.isArray(json) ? json : (json.rows || []);
+        } else {
+          matrix = trimmed.split(/\r?\n/).map(splitDataLine);
+        }
+      }
+
+      const parsed = parseMatrixToRecords(matrix);
+      const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+
+      if (parsed.length === 0) {
+        if (!silent) showToast('連線成功，但試算表內尚無有效的日期與數值資料', true);
+      } else {
+        const newHash = JSON.stringify(parsed);
+        if (newHash !== lastRemoteHash) {
+          lastRemoteHash = newHash;
+          records = parsed;
+          saveState(true);
+          syncMonthSelectors(false);
+          refreshAll();
+          if (!silent) showToast(`已從 Google Sheet 同步 ${parsed.length} 筆最新紀錄`);
+        } else if (!silent) {
+          showToast(`已是最新資料（共 ${parsed.length} 筆）`);
+        }
+      }
+
+      if (statusText) {
+        const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式（Apps Script）' : '即時讀取模式（Published CSV）';
+        statusText.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜最後同步：${nowStr}（共 ${records.length} 筆）`;
+      }
+    } catch (err) {
+      if (!silent) {
+        const detail = err && err.message ? err.message : '';
+        showToast(detail ? `同步失敗：${detail}` : '同步失敗：請確認 Apps Script 存取權限為「所有人」並已建立部署版本', true);
+      }
+    } finally {
+      if (syncBtn) {
+        syncBtn.disabled = false;
+        syncBtn.textContent = '↻ 立即同步';
+      }
+    }
+  }
+
+  // 若為 Apps Script，支援雙向回寫
+  async function pushToAppsScript() {
+    if (!gsConfig.url || !isAppsScriptUrl(gsConfig.url)) return;
+    const header = ['日期', '早收縮壓', '早舒張壓', '早脈搏', '早體溫', '早血氧', '晚收縮壓', '晚舒張壓', '晚脈搏', '晚體溫', '晚血氧'];
+    const rows = [header, ...records.map(r => [
+      r.date, r.amSbp ?? '', r.amDbp ?? '', r.amPulse ?? '', r.amTemp ?? '', r.amSpo2 ?? '',
+      r.pmSbp ?? '', r.pmDbp ?? '', r.pmPulse ?? '', r.pmTemp ?? '', r.pmSpo2 ?? ''
+    ])];
+    try {
+      await fetch(gsConfig.url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ rows })
+      });
+    } catch (e) {
+      console.warn('回寫 Apps Script 失敗', e);
+    }
+  }
+
+  function startAutoPoll() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(() => {
+      if (gsConfig.url && gsConfig.autoPoll) {
+        pullFromGoogleSheet(true);
+      }
+    }, 15000);
+  }
+
+  // 統計計算
+  function calcStats(list) {
+    const avg = (arr) => {
+      const valid = arr.filter(v => v !== null && v !== undefined);
+      if (!valid.length) return '-';
+      return (valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1);
+    };
+    const maxVal = (arr) => {
+      const valid = arr.filter(v => v !== null && v !== undefined);
+      return valid.length ? Math.max(...valid) : '-';
+    };
+    const countOver = (arr, limit) => arr.filter(v => v !== null && v > limit).length;
+
+    const amSbp = list.map(r => r.amSbp);
+    const pmSbp = list.map(r => r.pmSbp);
+    const amDbp = list.map(r => r.amDbp);
+    const pmDbp = list.map(r => r.pmDbp);
+    const amPulse = list.map(r => r.amPulse);
+    const pmPulse = list.map(r => r.pmPulse);
+    const amTemp = list.map(r => r.amTemp);
+    const pmTemp = list.map(r => r.pmTemp);
+    const allSpo2 = [...list.map(r => r.amSpo2), ...list.map(r => r.pmSpo2)];
+
+    return {
+      bpAvg: `早 ${avg(amSbp)}/${avg(amDbp)} ｜ 晚 ${avg(pmSbp)}/${avg(pmDbp)}`,
+      bpAlertCount: countOver(amSbp, THRESHOLDS.sbp) + countOver(pmSbp, THRESHOLDS.sbp) +
+                    countOver(amDbp, THRESHOLDS.dbp) + countOver(pmDbp, THRESHOLDS.dbp),
+      pulseAvg: `早 ${avg(amPulse)} ｜ 晚 ${avg(pmPulse)} 次/分`,
+      pulseMax: maxVal([...amPulse, ...pmPulse]),
+      pulseAlertCount: countOver(amPulse, THRESHOLDS.pulse) + countOver(pmPulse, THRESHOLDS.pulse),
+      tempAvg: `早 ${avg(amTemp)} ｜ 晚 ${avg(pmTemp)} °C`,
+      tempMax: maxVal([...amTemp, ...pmTemp]),
+      tempAlertCount: countOver(amTemp, THRESHOLDS.temp) + countOver(pmTemp, THRESHOLDS.temp),
+      spo2Avg: `${avg(allSpo2)} %`
+    };
+  }
+
+  function renderKpis(filtered) {
+    const grid = document.getElementById('kpiGrid');
+    if (!grid) return;
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="kpi-card" style="grid-column: 1 / -1; text-align:center; padding:24px; color:#64748b;">
+          目前檢視區間尚無量測紀錄，請先設定 Google Sheet 連線或點擊「＋ 新增一筆日期」。
+        </div>`;
+      return;
+    }
+    const st = calcStats(filtered);
+    grid.innerHTML = `
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均血壓 (mmHg)</span><span style="color:${st.bpAlertCount ? '#dc2626' : '#059669'}">超標 ${st.bpAlertCount} 次</span></div>
+        <div class="kpi-main" style="font-size:17px;">${st.bpAvg}</div>
+        <div class="kpi-sub">紅字門檻：收縮 &gt; 140 或 舒張 &gt; 90</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均脈搏 (次/分)</span><span style="color:${st.pulseAlertCount ? '#dc2626' : '#059669'}">超標 ${st.pulseAlertCount} 次</span></div>
+        <div class="kpi-main">${st.pulseAvg}</div>
+        <div class="kpi-sub">區間最高：${st.pulseMax} 次/分（&gt; 80 標紅）</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均體溫 (°C)</span><span style="color:${st.tempAlertCount ? '#dc2626' : '#059669'}">超標 ${st.tempAlertCount} 次</span></div>
+        <div class="kpi-main">${st.tempAvg}</div>
+        <div class="kpi-sub">區間最高：${st.tempMax} °C（&gt; 37.0 標紅）</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title"><span>平均血氧濃度 (%)</span><span>正常參考 ≥ 95%</span></div>
+        <div class="kpi-main">${st.spo2Avg}</div>
+        <div class="kpi-sub">統計區間：${getRangeLabelText()}（共 ${filtered.length} 天）</div>
+      </div>
+    `;
+  }
+
+  // 原生高解析 Canvas 折線圖繪製引擎
+  function setupHiDpiCanvas(canvas, width, height) {
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+  }
+
+  function shortDateLabel(dateStr) {
+    const norm = normalizeDateStr(dateStr);
+    const m = norm.match(/^\d{4}\/(\d{1,2}\/\d{1,2})$/);
+    return m ? m[1] : norm;
+  }
+
+  function drawLineChart(canvas, labels, seriesList, options = {}) {
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const w = options.forceWidth || Math.max(rect.width, 300);
+    const h = options.forceHeight || Math.max(rect.height, 240);
+    const ctx = setupHiDpiCanvas(canvas, w, h);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    if (!labels.length) {
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('尚無可繪製的量測數據', w / 2, h / 2);
+      return;
+    }
+
+    const padLeft = 46;
+    const padRight = options.rightAxis ? 46 : 20;
+    const padTop = 18;
+    const padBottom = 34;
+    const plotW = w - padLeft - padRight;
+    const plotH = h - padTop - padBottom;
+
+    // 計算 Y 軸範圍
+    let yMin = options.yMin ?? Infinity;
+    let yMax = options.yMax ?? -Infinity;
+    seriesList.forEach(s => {
+      if (s.axis === 'right') return;
+      s.data.forEach(v => {
+        if (v !== null && v !== undefined) {
+          if (v < yMin) yMin = v;
+          if (v > yMax) yMax = v;
+        }
+      });
+    });
+    if (!Number.isFinite(yMin) || !Number.isFinite(yMax)) {
+      yMin = 0;
+      yMax = 100;
+    }
+    if (yMin === yMax) {
+      yMin -= 5;
+      yMax += 5;
+    }
+    const yPad = (yMax - yMin) * 0.1;
+    if (options.yMin === undefined) yMin = Math.floor(yMin - yPad);
+    if (options.yMax === undefined) yMax = Math.ceil(yMax + yPad);
+
+    const getX = (idx) => {
+      if (labels.length === 1) return padLeft + plotW / 2;
+      return padLeft + (idx / (labels.length - 1)) * plotW;
+    };
+    const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+
+    // 格線與左軸刻度
+    const steps = 5;
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= steps; i++) {
+      const val = yMin + ((yMax - yMin) * i) / steps;
+      const y = getY(val);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, y);
+      ctx.lineTo(w - padRight, y);
+      ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.fillText(options.yDecimals ? val.toFixed(options.yDecimals) : Math.round(val), padLeft - 6, y);
+    }
+
+    // 右軸（合併圖體溫專用）
+    let getYRight = null;
+    if (options.rightAxis) {
+      const rMin = options.rMin ?? 35.5;
+      const rMax = options.rMax ?? 38.0;
+      getYRight = (val) => padTop + plotH - ((val - rMin) / (rMax - rMin)) * plotH;
+      ctx.textAlign = 'left';
+      for (let i = 0; i <= steps; i++) {
+        const val = rMin + ((rMax - rMin) * i) / steps;
+        const y = getYRight(val);
+        ctx.fillStyle = '#d97706';
+        ctx.fillText(val.toFixed(1), w - padRight + 6, y);
+      }
+    }
+
+    // 警戒參考線
+    (options.refLines || []).forEach(ref => {
+      const y = getY(ref.value);
+      if (y >= padTop && y <= padTop + plotH) {
+        ctx.save();
+        ctx.strokeStyle = ref.color || '#dc2626';
+        ctx.lineWidth = 1.3;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(w - padRight, y);
+        ctx.stroke();
+        ctx.fillStyle = ref.color || '#dc2626';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(ref.label, w - padRight - 4, y - 6);
+        ctx.restore();
+      }
+    });
+
+    // X 軸日期刻度
+    ctx.fillStyle = '#475569';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const maxLabels = Math.max(4, Math.floor(plotW / 44));
+    const stepX = Math.max(1, Math.ceil(labels.length / maxLabels));
+    labels.forEach((lbl, idx) => {
+      if (idx % stepX === 0 || idx === labels.length - 1) {
+        const x = getX(idx);
+        ctx.fillText(lbl, x, padTop + plotH + 8);
+      }
+    });
+
+    // 繪製各條折線與超標紅點
+    seriesList.forEach(s => {
+      const yFn = s.axis === 'right' && getYRight ? getYRight : getY;
+      ctx.save();
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = s.lineWidth || 2;
+      if (s.dashed) ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      let started = false;
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined) {
+          started = false;
+          return;
+        }
+        const x = getX(idx);
+        const y = yFn(v);
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+
+      // 資料點（嚴格超標時改為較大紅點）
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined) return;
+        const over = s.alertLimit !== undefined && v > s.alertLimit;
+        const x = getX(idx);
+        const y = yFn(v);
+        ctx.beginPath();
+        ctx.arc(x, y, over ? 4.2 : 2.6, 0, Math.PI * 2);
+        ctx.fillStyle = over ? '#dc2626' : s.color;
+        ctx.fill();
+        if (over) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+      });
+    });
+  }
+
+  // 專用：繪製 A4 列印/匯出用的「四項同圖」
+  // 規則：不含紅色虛線；血壓數值直接標示在線條對應點位旁；脈搏/體溫/血氧僅在超標時才顯示數值
+  function drawA4CombinedChart(canvas, filtered, width, height) {
+    if (!canvas) return;
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const w = width;
+    const h = height;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    const labels = filtered.map(r => shortDateLabel(r.date));
+    if (!labels.length) {
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '14px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('尚無可繪製的量測數據', w / 2, h / 2);
+      return;
+    }
+
+    const padLeft = 48;
+    const padRight = 48;
+    const padTop = 24;
+    const padBottom = 34;
+    const plotW = w - padLeft - padRight;
+    const plotH = h - padTop - padBottom;
+
+    const yMin = 50;
+    const yMax = 165;
+    const rMin = 35.5;
+    const rMax = 38.0;
+
+    const getX = (idx) => {
+      if (labels.length === 1) return padLeft + plotW / 2;
+      return padLeft + (idx / (labels.length - 1)) * plotW;
+    };
+    const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+    const getYRight = (val) => padTop + plotH - ((val - rMin) / (rMax - rMin)) * plotH;
+
+    // 左右軸格線與刻度（無紅色虛線）
+    const steps = 5;
+    ctx.font = '11px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= steps; i++) {
+      const val = yMin + ((yMax - yMin) * i) / steps;
+      const y = getY(val);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, y);
+      ctx.lineTo(w - padRight, y);
+      ctx.stroke();
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#475569';
+      ctx.fillText(Math.round(val), padLeft - 6, y);
+
+      const rVal = rMin + ((rMax - rMin) * i) / steps;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#d97706';
+      ctx.fillText(rVal.toFixed(1), w - padRight + 6, y);
+    }
+
+    // X 軸日期刻度
+    ctx.fillStyle = '#334155';
+    ctx.font = '11px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const maxLabels = Math.max(4, Math.floor(plotW / 38));
+    const stepX = Math.max(1, Math.ceil(labels.length / maxLabels));
+    labels.forEach((lbl, idx) => {
+      if (idx % stepX === 0 || idx === labels.length - 1) {
+        ctx.fillText(lbl, getX(idx), padTop + plotH + 8);
+      }
+    });
+
+    const seriesList = [
+      { kind: 'bp', type: 'sbp', color: '#1d4ed8', dashed: false, data: filtered.map(r => r.amSbp), alertLimit: THRESHOLDS.sbp, labelDy: -10 },
+      { kind: 'bp', type: 'sbp', color: '#3b82f6', dashed: true, data: filtered.map(r => r.pmSbp), alertLimit: THRESHOLDS.sbp, labelDy: -10 },
+      { kind: 'bp', type: 'dbp', color: '#059669', dashed: false, data: filtered.map(r => r.amDbp), alertLimit: THRESHOLDS.dbp, labelDy: 11 },
+      { kind: 'bp', type: 'dbp', color: '#10b981', dashed: true, data: filtered.map(r => r.pmDbp), alertLimit: THRESHOLDS.dbp, labelDy: 11 },
+      { kind: 'pulse', color: '#7c3aed', dashed: false, data: filtered.map(r => r.amPulse), alertLimit: THRESHOLDS.pulse, labelDy: -10 },
+      { kind: 'pulse', color: '#a855f7', dashed: true, data: filtered.map(r => r.pmPulse), alertLimit: THRESHOLDS.pulse, labelDy: -10 },
+      { kind: 'spo2', color: '#0891b2', dashed: false, data: filtered.map(r => r.amSpo2), alertLimit: null, labelDy: -10 },
+      { kind: 'spo2', color: '#06b6d4', dashed: true, data: filtered.map(r => r.pmSpo2), alertLimit: null, labelDy: -10 },
+      { kind: 'temp', axis: 'right', color: '#d97706', dashed: false, data: filtered.map(r => r.amTemp), alertLimit: THRESHOLDS.temp, labelDy: -10 },
+      { kind: 'temp', axis: 'right', color: '#f59e0b', dashed: true, data: filtered.map(r => r.pmTemp), alertLimit: THRESHOLDS.temp, labelDy: -10 }
+    ];
+
+    // 繪製線條
+    seriesList.forEach(s => {
+      const yFn = s.axis === 'right' ? getYRight : getY;
+      ctx.save();
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 1.9;
+      if (s.dashed) ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      let started = false;
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined) {
+          started = false;
+          return;
+        }
+        const x = getX(idx);
+        const y = yFn(v);
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 繪製點位與數值標籤：
+    // 1. 血壓數值一律標示在對應點位旁（超過門檻顯示紅字粗體）
+    // 2. 脈搏、體溫、血氧僅在超標時才顯示數值
+    seriesList.forEach(s => {
+      const yFn = s.axis === 'right' ? getYRight : getY;
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined) return;
+        const isSpo2Over = s.kind === 'spo2' && v < 95;
+        const isOtherOver = s.alertLimit !== null && v > s.alertLimit;
+        const isOver = isOtherOver || isSpo2Over;
+
+        const shouldShowLabel = (s.kind === 'bp') || isOver;
+        if (!shouldShowLabel && !isOver) return;
+
+        const x = getX(idx);
+        const y = yFn(v);
+
+        if (s.kind === 'bp' || isOver) {
+          ctx.beginPath();
+          ctx.arc(x, y, isOver ? 4.2 : 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = isOver ? '#dc2626' : s.color;
+          ctx.fill();
+        }
+
+        if (shouldShowLabel) {
+          const text = s.kind === 'temp' ? Number(v).toFixed(1) : String(v);
+          ctx.save();
+          ctx.font = isOver
+            ? 'bold 9.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif'
+            : '8.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          const ly = Math.max(padTop + 8, Math.min(padTop + plotH - 6, y + s.labelDy));
+          const tw = ctx.measureText(text).width;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+          ctx.fillRect(x - tw / 2 - 1.5, ly - 5.5, tw + 3, 11);
+
+          ctx.fillStyle = isOver ? '#dc2626' : s.color;
+          ctx.fillText(text, x, ly);
+          ctx.restore();
+        }
+      });
+    });
+  }
+
+  function applyChartModeVisibility() {
+    const bpCard = document.getElementById('cardChartBP');
+    const pulseCard = document.getElementById('cardChartPulse');
+    const tempCard = document.getElementById('cardChartTemp');
+    const combCard = document.getElementById('cardChartCombined');
+
+    const btnInd = document.getElementById('modeIndependentBtn');
+    const btnComb = document.getElementById('modeCombinedBtn');
+    const btnAll = document.getElementById('modeAllBtn');
+
+    if (btnInd) btnInd.classList.toggle('btn-active', chartMode === 'independent');
+    if (btnComb) btnComb.classList.toggle('btn-active', chartMode === 'combined');
+    if (btnAll) btnAll.classList.toggle('btn-active', chartMode === 'all');
+
+    const showInd = chartMode === 'independent' || chartMode === 'all';
+    const showComb = chartMode === 'combined' || chartMode === 'all';
+
+    if (bpCard) bpCard.classList.toggle('hidden', !showInd);
+    if (pulseCard) pulseCard.classList.toggle('hidden', !showInd);
+    if (tempCard) tempCard.classList.toggle('hidden', !showInd);
+    if (combCard) combCard.classList.toggle('hidden', !showComb);
+  }
+
+  function renderEditableTable(filtered) {
+    const tbody = document.getElementById('recordsTbody');
+    const summary = document.getElementById('tableRangeSummary');
+    if (summary) {
+      summary.textContent = `目前檢視區間：${getRangeLabelText()}（顯示 ${filtered.length} 筆 / 總計 ${records.length} 筆）`;
+    }
+    if (!tbody) return;
+
+    if (!filtered.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="12" style="padding:20px; color:#64748b;">
+            此檢視區間尚無量測紀錄，請設定 Google Sheet 連線或點擊上方「＋ 新增一筆日期」。
+          </td>
+        </tr>`;
+      return;
+    }
+
+    const indexMap = new Map(records.map((r, i) => [r, i]));
+    const makeCell = (rec, idx, field, alertType = null, step = '1') => {
+      const val = rec[field] ?? '';
+      const alertClass = alertType && isAlertVal(alertType, val) ? ' val-alert' : '';
+      return `<td><input type="number" step="${step}" class="cell-input${alertClass}" data-idx="${idx}" data-field="${field}" value="${val}" /></td>`;
+    };
+
+    tbody.innerHTML = filtered.map(rec => {
+      const idx = indexMap.get(rec);
+      return `
+        <tr>
+          <td><input type="text" class="cell-input date-input" data-idx="${idx}" data-field="date" value="${rec.date}" /></td>
+          ${makeCell(rec, idx, 'amSbp', 'sbp')}
+          ${makeCell(rec, idx, 'amDbp', 'dbp')}
+          ${makeCell(rec, idx, 'amPulse', 'pulse')}
+          ${makeCell(rec, idx, 'amTemp', 'temp', '0.1')}
+          ${makeCell(rec, idx, 'amSpo2')}
+          ${makeCell(rec, idx, 'pmSbp', 'sbp')}
+          ${makeCell(rec, idx, 'pmDbp', 'dbp')}
+          ${makeCell(rec, idx, 'pmPulse', 'pulse')}
+          ${makeCell(rec, idx, 'pmTemp', 'temp', '0.1')}
+          ${makeCell(rec, idx, 'pmSpo2')}
+          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="${idx}">刪除</button></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function refreshAll() {
+    const filtered = getFilteredRecords();
+    updateGsBannerUI();
+    applyChartModeVisibility();
+    renderKpis(filtered);
+    renderAllCharts(filtered);
+    renderEditableTable(filtered);
+  }
+
+  // 建立 A4 高解析列印 DOM（頂部四格區間平均摘要 + 上下兩張：早上四項同圖、晚上四項同圖，各自上方附早/晚平均摘要，無紅色虛線）
+  function buildA4ReportElement() {
+    const filtered = getFilteredRecords();
+    const orientation = document.getElementById('a4OrientationSelect').value;
+    const isPortrait = orientation === 'portrait';
+
+    const pageW = isPortrait ? 794 : 1123;
+    const pageH = isPortrait ? 1123 : 794;
+
+    const st = calcStats(filtered);
+    const kpiCardsHtml = filtered.length ? `
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:10px;">
+        <div style="border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#f8fafc;">
+          <div style="font-size:10px; font-weight:700; color:#64748b;">區間平均血壓 (mmHg)</div>
+          <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:2px;">${st.bpAvg}</div>
+        </div>
+        <div style="border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#f8fafc;">
+          <div style="font-size:10px; font-weight:700; color:#64748b;">區間平均脈搏 (次/分)</div>
+          <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:2px;">${st.pulseAvg}</div>
+        </div>
+        <div style="border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#f8fafc;">
+          <div style="font-size:10px; font-weight:700; color:#64748b;">區間平均體溫 (°C)</div>
+          <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:2px;">${st.tempAvg}</div>
+        </div>
+        <div style="border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; background:#f8fafc;">
+          <div style="font-size:10px; font-weight:700; color:#64748b;">區間平均血氧 (%)</div>
+          <div style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:2px;">${st.spo2Avg}</div>
+        </div>
+      </div>
+    ` : '';
+
+    const wrapper = document.createElement('div');
+    wrapper.style.width = pageW + 'px';
+    wrapper.style.minHeight = pageH + 'px';
+    wrapper.style.background = '#ffffff';
+    wrapper.style.color = '#0f172a';
+    wrapper.style.padding = '16px 22px';
+    wrapper.style.fontFamily = '"Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    wrapper.style.boxSizing = 'border-box';
+
+    wrapper.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:8px;">
+        <div style="font-size:18px; font-weight:800;">${getA4ReportHeading()}</div>
+        <div style="text-align:right; font-size:10.5px; color:#dc2626; font-weight:700;">
+          血壓標示於線條點位旁；超標數值以紅字粗體顯示
+        </div>
+      </div>
+      ${kpiCardsHtml}
+    `;
+
+    const chartBoxW = pageW - 44;
+    const singleCardH = Math.floor((pageH - 138) / 2);
+    const innerChartH = Math.max(145, singleCardH - 44);
+
+    ['am', 'pm'].forEach((session, idx) => {
+      const box = document.createElement('div');
+      box.style.border = '1px solid #cbd5e1';
+      box.style.borderRadius = '8px';
+      box.style.padding = '7px 10px';
+      if (idx === 0) box.style.marginBottom = '10px';
+
+      const sessionTitle = session === 'am' ? '【早上】四項生理指標整合趨勢' : '【晚上】四項生理指標整合趨勢';
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:4px;">
+          <span style="font-size:12px; font-weight:800; color:#0f172a;">${sessionTitle}</span>
+          <span style="font-size:11px; font-weight:700; color:#1e293b;">${buildSessionSummaryText(filtered, session)}</span>
+        </div>
+      `;
+
+      const tempCanvas = document.createElement('canvas');
+      drawA4SessionCombinedChart(tempCanvas, filtered, session, chartBoxW - 20, innerChartH);
+
+      const img = document.createElement('img');
+      img.src = tempCanvas.toDataURL('image/png');
+      img.style.width = '100%';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+      box.appendChild(img);
+      wrapper.appendChild(box);
+    });
+
+    return { wrapper, pageW, pageH };
+  }
+
+  // 計算早/晚區間平均摘要文字（血壓、脈搏、體溫、血氧）
+  function buildSessionSummaryText(filtered, session) {
+    const isAm = session === 'am';
+    const avg = (arr) => {
+      const valid = arr.filter(v => v !== null && v !== undefined && Number.isFinite(v));
+      if (!valid.length) return '-';
+      return (valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1);
+    };
+
+    const sbpAvg = avg(filtered.map(r => isAm ? r.amSbp : r.pmSbp));
+    const dbpAvg = avg(filtered.map(r => isAm ? r.amDbp : r.pmDbp));
+    const pulseAvg = avg(filtered.map(r => isAm ? r.amPulse : r.pmPulse));
+    const tempAvg = avg(filtered.map(r => isAm ? r.amTemp : r.pmTemp));
+    const spo2Avg = avg(filtered.map(r => isAm ? r.amSpo2 : r.pmSpo2));
+
+    return `平均血壓 ${sbpAvg}/${dbpAvg} mmHg ｜ 平均脈搏 ${pulseAvg} 次/分 ｜ 平均體溫 ${tempAvg} °C ｜ 平均血氧 ${spo2Avg} %`;
+  }
+
+  // 繪製單一時段（am 或 pm）的四項同圖（無紅色虛線；血壓數值標示於點位旁；其他指標僅超標顯示；超標紅字粗體）
+  function drawA4SessionCombinedChart(canvas, filtered, session, width, height) {
+    if (!canvas) return;
+    const isAm = session === 'am';
+    const dpr = Math.max(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const w = width;
+    const h = height;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, w, h);
+
+    const labels = filtered.map(r => shortDateLabel(r.date));
+    if (!labels.length) {
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '13px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('尚無可繪製的量測數據', w / 2, h / 2);
+      return;
+    }
+
+    const padLeft = 44;
+    const padRight = 44;
+    const padTop = 18;
+    const padBottom = 26;
+    const plotW = Math.max(80, w - padLeft - padRight);
+    const plotH = Math.max(60, h - padTop - padBottom);
+
+    const yMin = 50;
+    const yMax = 165;
+    const rMin = 35.5;
+    const rMax = 38.0;
+
+    const getX = (idx) => {
+      if (labels.length === 1) return padLeft + plotW / 2;
+      return padLeft + (idx / (labels.length - 1)) * plotW;
+    };
+    const getY = (val) => padTop + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+    const getYRight = (val) => padTop + plotH - ((val - rMin) / (rMax - rMin)) * plotH;
+
+    // 格線與左右軸刻度（不含紅色虛線）
+    const steps = 5;
+    ctx.font = '10px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= steps; i++) {
+      const val = yMin + ((yMax - yMin) * i) / steps;
+      const y = getY(val);
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padLeft, y);
+      ctx.lineTo(w - padRight, y);
+      ctx.stroke();
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#475569';
+      ctx.fillText(Math.round(val), padLeft - 5, y);
+
+      const rVal = rMin + ((rMax - rMin) * i) / steps;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#d97706';
+      ctx.fillText(rVal.toFixed(1), w - padRight + 5, y);
+    }
+
+    // X 軸日期刻度
+    ctx.fillStyle = '#334155';
+    ctx.font = '10px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const maxLabels = Math.max(4, Math.floor(plotW / 38));
+    const stepX = Math.max(1, Math.ceil(labels.length / maxLabels));
+    labels.forEach((lbl, idx) => {
+      if (idx % stepX === 0 || idx === labels.length - 1) {
+        ctx.fillText(lbl, getX(idx), padTop + plotH + 6);
+      }
+    });
+
+    const seriesList = [
+      {
+        kind: 'bp',
+        color: '#1d4ed8',
+        data: filtered.map(r => isAm ? r.amSbp : r.pmSbp),
+        alertLimit: THRESHOLDS.sbp,
+        labelDy: -9
+      },
+      {
+        kind: 'bp',
+        color: '#059669',
+        data: filtered.map(r => isAm ? r.amDbp : r.pmDbp),
+        alertLimit: THRESHOLDS.dbp,
+        labelDy: 10
+      },
+      {
+        kind: 'pulse',
+        color: '#7c3aed',
+        data: filtered.map(r => isAm ? r.amPulse : r.pmPulse),
+        alertLimit: THRESHOLDS.pulse,
+        labelDy: -9
+      },
+      {
+        kind: 'spo2',
+        color: '#0891b2',
+        data: filtered.map(r => isAm ? r.amSpo2 : r.pmSpo2),
+        alertLimit: null,
+        labelDy: -9
+      },
+      {
+        kind: 'temp',
+        axis: 'right',
+        color: '#d97706',
+        data: filtered.map(r => isAm ? r.amTemp : r.pmTemp),
+        alertLimit: THRESHOLDS.temp,
+        labelDy: -9
+      }
+    ];
+
+    // 繪製線條
+    seriesList.forEach(s => {
+      const yFn = s.axis === 'right' ? getYRight : getY;
+      ctx.save();
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      let started = false;
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined || !Number.isFinite(v)) {
+          started = false;
+          return;
+        }
+        const x = getX(idx);
+        const y = yFn(v);
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 繪製點位與數值標籤：血壓數值標示於對應點位旁；脈搏/體溫/血氧僅在超標時才顯示數值
+    seriesList.forEach(s => {
+      const yFn = s.axis === 'right' ? getYRight : getY;
+      s.data.forEach((v, idx) => {
+        if (v === null || v === undefined || !Number.isFinite(v)) return;
+        const isSpo2Over = s.kind === 'spo2' && v < 95;
+        const isOtherOver = s.alertLimit !== null && v > s.alertLimit;
+        const isOver = isOtherOver || isSpo2Over;
+
+        const shouldShowLabel = (s.kind === 'bp') || isOver;
+        if (!shouldShowLabel && !isOver) return;
+
+        const x = getX(idx);
+        const y = yFn(v);
+
+        if (s.kind === 'bp' || isOver) {
+          ctx.beginPath();
+          ctx.arc(x, y, isOver ? 4.2 : 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = isOver ? '#dc2626' : s.color;
+          ctx.fill();
+        }
+
+        if (shouldShowLabel) {
+          const text = s.kind === 'temp' ? Number(v).toFixed(1) : String(v);
+          ctx.save();
+          ctx.font = isOver
+            ? 'bold 9.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif'
+            : '8.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          const ly = Math.max(padTop + 8, Math.min(padTop + plotH - 6, y + s.labelDy));
+          const tw = ctx.measureText(text).width;
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+          ctx.fillRect(x - tw / 2 - 1.5, ly - 5.5, tw + 3, 11);
+
+          ctx.fillStyle = isOver ? '#dc2626' : s.color;
+          ctx.fillText(text, x, ly);
+          ctx.restore();
+        }
+      });
+    });
+  }
+
+  // 純原生 HTML5 Canvas 2D 直接繪製高解析 A4 圖片並觸發下載（頂部四格區間平均摘要 + 上下兩欄：早上/晚上四項同圖 + 各自上方區間平均摘要）
+  function exportA4AsPng() {
+    const filtered = getFilteredRecords();
+    if (!filtered.length) {
+      showToast('目前沒有可匯出的資料', true);
+      return;
+    }
+    showToast('正在產生高解析 A4 圖片...');
+
+    const orientation = document.getElementById('a4OrientationSelect').value;
+    const isPortrait = orientation === 'portrait';
+    const scale = 2;
+    const pageW = isPortrait ? 794 : 1123;
+    const pageH = isPortrait ? 1123 : 794;
+    const padX = 22;
+    const contentW = pageW - padX * 2;
+
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = pageW * scale;
+    outCanvas.height = pageH * scale;
+    const ctx = outCanvas.getContext('2d');
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+
+    // 白底
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, pageW, pageH);
+
+    // 1. 頁首標題
+    let curY = 16;
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 18px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(getA4ReportHeading(), padX, curY);
+
+    ctx.fillStyle = '#dc2626';
+    ctx.font = 'bold 10.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('血壓標示於線條點位旁；超標數值以紅字粗體顯示', pageW - padX, curY + 4);
+
+    curY += 26;
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padX, curY);
+    ctx.lineTo(pageW - padX, curY);
+    ctx.stroke();
+    curY += 8;
+
+    // 2. 兩張圖最上方新增四格區間平均摘要（同網頁版四項指標）
+    const st = calcStats(filtered);
+    const kpiBoxH = 42;
+    const kpiGap = 8;
+    const kpiW = (contentW - kpiGap * 3) / 4;
+    const kpiItems = [
+      { label: '區間平均血壓 (mmHg)', value: st.bpAvg },
+      { label: '區間平均脈搏 (次/分)', value: st.pulseAvg },
+      { label: '區間平均體溫 (°C)', value: st.tempAvg },
+      { label: '區間平均血氧 (%)', value: st.spo2Avg }
+    ];
+
+    kpiItems.forEach((item, i) => {
+      const kx = padX + i * (kpiW + kpiGap);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(kx, curY, kpiW, kpiBoxH);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(kx, curY, kpiW, kpiBoxH);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 9.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(item.label, kx + 8, curY + 6);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 12px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.fillText(String(item.value), kx + 8, curY + 21);
+    });
+
+    curY += kpiBoxH + 10;
+
+    // 3. 上下兩欄（早上 / 晚上）：每欄上方附該區間平均摘要，下方為四項同圖（無紅色虛線）
+    const gapBetween = 10;
+    const bottomMargin = 16;
+    const totalAvailH = pageH - curY - bottomMargin;
+    const blockH = Math.floor((totalAvailH - gapBetween) / 2);
+
+    ['am', 'pm'].forEach((session, idx) => {
+      const boxY = curY + idx * (blockH + gapBetween);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padX, boxY, contentW, blockH);
+
+      const sessionLabel = session === 'am' ? '【早上】四項生理指標整合趨勢' : '【晚上】四項生理指標整合趨勢';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 11.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(sessionLabel, padX + 10, boxY + 7);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 10.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(buildSessionSummaryText(filtered, session), padX + contentW - 10, boxY + 8);
+
+      const chartY = boxY + 24;
+      const chartH = Math.max(110, blockH - 30);
+      const sessionCanvas = document.createElement('canvas');
+      drawA4SessionCombinedChart(sessionCanvas, filtered, session, contentW - 16, chartH);
+      ctx.drawImage(sessionCanvas, padX + 8, chartY, contentW - 16, chartH);
+    });
+
+    // 觸發 PNG 下載
+    try {
+      outCanvas.toBlob((blob) => {
+        if (!blob) {
+          showToast('圖片產生失敗，請改用「直接列印 A4」', true);
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `生理量測報表_${getRangeLabelText().replace(/\s+/g, '')}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        showToast('A4 高解析圖片已下載！');
+      }, 'image/png');
+    } catch (err) {
+      showToast('瀏覽器限制自動下載，請使用「直接列印 A4」另存 PDF', true);
+    }
+  }
+
+  function renderAllCharts(filtered) {
+    const labels = filtered.map(r => shortDateLabel(r.date));
+
+    if (chartMode === 'independent' || chartMode === 'all') {
+      drawLineChart(document.getElementById('canvasBP'), labels, [
+        { label: '早收縮', color: '#1d4ed8', data: filtered.map(r => r.amSbp), alertLimit: THRESHOLDS.sbp },
+        { label: '晚收縮', color: '#0284c7', dashed: true, data: filtered.map(r => r.pmSbp), alertLimit: THRESHOLDS.sbp },
+        { label: '早舒張', color: '#059669', data: filtered.map(r => r.amDbp), alertLimit: THRESHOLDS.dbp },
+        { label: '晚舒張', color: '#0d9488', dashed: true, data: filtered.map(r => r.pmDbp), alertLimit: THRESHOLDS.dbp }
+      ], {
+        yMin: 45,
+        yMax: 165,
+        refLines: [
+          { value: THRESHOLDS.sbp, label: '收縮壓 140', color: '#dc2626' },
+          { value: THRESHOLDS.dbp, label: '舒張壓 90', color: '#dc2626' }
+        ]
+      });
+
+      drawLineChart(document.getElementById('canvasPulse'), labels, [
+        { label: '早上脈搏', color: '#7c3aed', data: filtered.map(r => r.amPulse), alertLimit: THRESHOLDS.pulse },
+        { label: '晚上脈搏', color: '#db2777', dashed: true, data: filtered.map(r => r.pmPulse), alertLimit: THRESHOLDS.pulse }
+      ], {
+        yMin: 40,
+        yMax: 110,
+        refLines: [
+          { value: THRESHOLDS.pulse, label: '脈搏 80', color: '#dc2626' }
+        ]
+      });
+
+      drawLineChart(document.getElementById('canvasTemp'), labels, [
+        { label: '早上體溫', color: '#d97706', data: filtered.map(r => r.amTemp), alertLimit: THRESHOLDS.temp },
+        { label: '晚上體溫', color: '#ea580c', dashed: true, data: filtered.map(r => r.pmTemp), alertLimit: THRESHOLDS.temp }
+      ], {
+        yMin: 35.5,
+        yMax: 38.0,
+        yDecimals: 1,
+        refLines: [
+          { value: THRESHOLDS.temp, label: '體溫 37.0°C', color: '#dc2626' }
+        ]
+      });
+    }
+
+    if (chartMode === 'combined' || chartMode === 'all') {
+      const enabled = new Set(
+        Array.from(document.querySelectorAll('.comb-toggle:checked')).map(el => el.value)
+      );
+      const combSeries = [];
+      if (enabled.has('bp')) {
+        combSeries.push(
+          { label: '早收縮', color: '#1d4ed8', data: filtered.map(r => r.amSbp), alertLimit: THRESHOLDS.sbp },
+          { label: '晚收縮', color: '#3b82f6', dashed: true, data: filtered.map(r => r.pmSbp), alertLimit: THRESHOLDS.sbp },
+          { label: '早舒張', color: '#059669', data: filtered.map(r => r.amDbp), alertLimit: THRESHOLDS.dbp },
+          { label: '晚舒張', color: '#10b981', dashed: true, data: filtered.map(r => r.pmDbp), alertLimit: THRESHOLDS.dbp }
+        );
+      }
+      if (enabled.has('pulse')) {
+        combSeries.push(
+          { label: '早脈搏', color: '#7c3aed', data: filtered.map(r => r.amPulse), alertLimit: THRESHOLDS.pulse },
+          { label: '晚脈搏', color: '#a855f7', dashed: true, data: filtered.map(r => r.pmPulse), alertLimit: THRESHOLDS.pulse }
+        );
+      }
+      if (enabled.has('spo2')) {
+        combSeries.push(
+          { label: '早血氧', color: '#0891b2', data: filtered.map(r => r.amSpo2) },
+          { label: '晚血氧', color: '#06b6d4', dashed: true, data: filtered.map(r => r.pmSpo2) }
+        );
+      }
+      if (enabled.has('temp')) {
+        combSeries.push(
+          { label: '早體溫', axis: 'right', color: '#d97706', data: filtered.map(r => r.amTemp), alertLimit: THRESHOLDS.temp },
+          { label: '晚體溫', axis: 'right', color: '#f59e0b', dashed: true, data: filtered.map(r => r.pmTemp), alertLimit: THRESHOLDS.temp }
+        );
+      }
+
+      drawLineChart(document.getElementById('canvasCombined'), labels, combSeries, {
+        yMin: 50,
+        yMax: 165,
+        rightAxis: true,
+        rMin: 35.5,
+        rMax: 38.0
+      });
+    }
+  }
+
+  function triggerPrintA4() {
+    const filtered = getFilteredRecords();
+    if (!filtered.length) {
+      showToast('目前沒有可列印的資料', true);
+      return;
+    }
+    const mount = document.getElementById('printMountArea');
+    mount.innerHTML = '';
+    const { wrapper } = buildA4ReportElement();
+    mount.appendChild(wrapper);
+    setTimeout(() => window.print(), 120);
+  }
+
+  // 綁定事件
+  function bindEvents() {
+    // 開放直接編輯主標題並自動儲存
+    const titleEl = document.getElementById('reportMainTitle');
+    if (titleEl) {
+      titleEl.addEventListener('blur', () => {
+        const val = titleEl.textContent.trim();
+        reportTitle = val || '門診生理量測趨勢與 A4 報表工具';
+        titleEl.textContent = reportTitle;
+        try {
+          localStorage.setItem(STORAGE_TITLE_KEY, reportTitle);
+        } catch (e) {
+          console.warn('儲存標題失敗', e);
+        }
+        refreshAll();
+      });
+    }
+
+    // Google Sheet 設定彈窗
+    const gsModal = document.getElementById('gsModal');
+    document.getElementById('openGsModalBtn').addEventListener('click', () => {
+      document.getElementById('gsUrlInput').value = gsConfig.url || '';
+      gsModal.classList.add('open');
+    });
+    document.getElementById('closeGsModalBtn').addEventListener('click', () => gsModal.classList.remove('open'));
+    document.getElementById('saveGsUrlBtn').addEventListener('click', () => {
+      const url = document.getElementById('gsUrlInput').value.trim();
+      if (!url) {
+        showToast('請輸入有效的 Google Sheet 網址', true);
+        return;
+      }
+      gsConfig.url = url;
+      lastRemoteHash = '';
+      saveState(true);
+      updateGsBannerUI();
+      gsModal.classList.remove('open');
+      pullFromGoogleSheet(false);
+    });
+    document.getElementById('disconnectGsBtn').addEventListener('click', () => {
+      gsConfig.url = DEFAULT_GS_URL;
+      lastRemoteHash = '';
+      saveState(true);
+      updateGsBannerUI();
+      gsModal.classList.remove('open');
+      showToast(DEFAULT_GS_URL ? '已還原為預設 CSV 連線設定' : '已清除自訂連線設定');
+    });
+    document.getElementById('syncGsNowBtn').addEventListener('click', () => pullFromGoogleSheet(false));
+    document.getElementById('autoPollToggle').addEventListener('change', (e) => {
+      gsConfig.autoPoll = e.target.checked;
+      saveState(true);
+      showToast(gsConfig.autoPoll ? '已開啟每 15 秒自動同步' : '已暫停自動同步');
+    });
+    document.getElementById('copyGasCodeBtn').addEventListener('click', () => {
+      const code = document.getElementById('gasCodeBlock').textContent;
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('已複製 Apps Script 程式碼');
+    });
+
+    // 月份區間選擇
+    document.getElementById('startMonthSelect').addEventListener('change', (e) => {
+      startMonth = e.target.value;
+      if (endMonth < startMonth) endMonth = startMonth;
+      document.getElementById('endMonthSelect').value = endMonth;
+      refreshAll();
+    });
+    document.getElementById('endMonthSelect').addEventListener('change', (e) => {
+      endMonth = e.target.value;
+      if (startMonth > endMonth) startMonth = endMonth;
+      document.getElementById('startMonthSelect').value = startMonth;
+      refreshAll();
+    });
+    document.getElementById('btnSingleMonth').addEventListener('click', () => {
+      const months = getAvailableMonths();
+      if (!months.length) return showToast('目前尚無月份資料', true);
+      const latest = months[months.length - 1];
+      startMonth = latest;
+      endMonth = latest;
+      syncMonthSelectors(false);
+      refreshAll();
+      showToast(`已切換為單月檢視：${formatMonthLabel(latest)}`);
+    });
+    document.getElementById('btnThreeMonths').addEventListener('click', () => {
+      const months = getAvailableMonths();
+      if (!months.length) return showToast('目前尚無月份資料', true);
+      endMonth = months[months.length - 1];
+      startMonth = months[Math.max(0, months.length - 3)];
+      syncMonthSelectors(false);
+      refreshAll();
+      showToast(`已切換為近三個月：${getRangeLabelText()}`);
+    });
+    document.getElementById('btnAllMonths').addEventListener('click', () => {
+      const months = getAvailableMonths();
+      if (!months.length) return showToast('目前尚無月份資料', true);
+      syncMonthSelectors(true);
+      refreshAll();
+      showToast(`已顯示全部月份：${getRangeLabelText()}`);
+    });
+
+    // 圖表三種模式切換
+    document.getElementById('modeIndependentBtn').addEventListener('click', () => {
+      chartMode = 'independent';
+      refreshAll();
+    });
+    document.getElementById('modeCombinedBtn').addEventListener('click', () => {
+      chartMode = 'combined';
+      refreshAll();
+    });
+    document.getElementById('modeAllBtn').addEventListener('click', () => {
+      chartMode = 'all';
+      refreshAll();
+    });
+    document.querySelectorAll('.comb-toggle').forEach(cb => {
+      cb.addEventListener('change', () => renderAllCharts(getFilteredRecords()));
+    });
+
+    // A4 匯出與列印
+    document.getElementById('exportA4ImgBtn').addEventListener('click', exportA4AsPng);
+    document.getElementById('printA4Btn').addEventListener('click', triggerPrintA4);
+
+    // 表格即時編輯與刪除
+    document.getElementById('recordsTbody').addEventListener('change', (e) => {
+      const target = e.target;
+      if (!target.classList.contains('cell-input')) return;
+      const idx = parseInt(target.dataset.idx, 10);
+      const field = target.dataset.field;
+      if (!records[idx]) return;
+
+      if (field === 'date') {
+        records[idx].date = normalizeDateStr(target.value);
+        records = sortRecords(records);
+        syncMonthSelectors(false);
+      } else {
+        records[idx][field] = toNum(target.value);
+      }
+      saveState(false);
+      refreshAll();
+    });
+
+    document.getElementById('recordsTbody').addEventListener('click', (e) => {
+      const delBtn = e.target.closest('[data-del-idx]');
+      if (!delBtn) return;
+      const idx = parseInt(delBtn.dataset.delIdx, 10);
+      records.splice(idx, 1);
+      saveState(false);
+      syncMonthSelectors(false);
+      refreshAll();
+      showToast('已刪除該筆紀錄');
+    });
+
+    // 新增一筆日期
+    document.getElementById('addRowBtn').addEventListener('click', () => {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`;
+      records.push({
+        date: dateStr,
+        amSbp: null, amDbp: null, amPulse: null, amTemp: null, amSpo2: null,
+        pmSbp: null, pmDbp: null, pmPulse: null, pmTemp: null, pmSpo2: null
+      });
+      records = sortRecords(records);
+      saveState(false);
+      syncMonthSelectors(false);
+      refreshAll();
+      showToast(`已新增 ${dateStr} 空白列`);
+    });
+
+    // 批次貼上資料彈窗
+    const pasteModal = document.getElementById('pasteModal');
+    document.getElementById('openPasteModalBtn').addEventListener('click', () => {
+      document.getElementById('pasteTextarea').value = '';
+      pasteModal.classList.add('open');
+    });
+    document.getElementById('closePasteModalBtn').addEventListener('click', () => pasteModal.classList.remove('open'));
+
+    function handlePasteImport(replaceAll) {
+      const raw = document.getElementById('pasteTextarea').value.trim();
+      if (!raw) return showToast('請先貼上數據內容', true);
+      const matrix = raw.split(/\r?\n/).map(splitDataLine);
+      const parsed = parseMatrixToRecords(matrix);
+      if (!parsed.length) return showToast('未偵測到有效日期與數值列，請檢查格式', true);
+
+      if (replaceAll) {
+        records = parsed;
+      } else {
+        const map = new Map(records.map(r => [r.date, r]));
+        parsed.forEach(r => map.set(r.date, r));
+        records = sortRecords(Array.from(map.values()));
+      }
+      saveState(false);
+      syncMonthSelectors(true);
+      refreshAll();
+      pasteModal.classList.remove('open');
+      showToast(`已成功匯入 ${parsed.length} 筆紀錄`);
+    }
+
+    document.getElementById('applyPasteMergeBtn').addEventListener('click', () => handlePasteImport(false));
+    document.getElementById('applyPasteReplaceBtn').addEventListener('click', () => handlePasteImport(true));
+
+    // 匯出 CSV
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      const filtered = getFilteredRecords();
+      if (!filtered.length) return showToast('尚無資料可匯出', true);
+      const header = '日期,早收縮壓,早舒張壓,早脈搏,早體溫,早血氧,晚收縮壓,晚舒張壓,晚脈搏,晚體溫,晚血氧';
+      const lines = filtered.map(r => [
+        r.date, r.amSbp ?? '', r.amDbp ?? '', r.amPulse ?? '', r.amTemp ?? '', r.amSpo2 ?? '',
+        r.pmSbp ?? '', r.pmDbp ?? '', r.pmPulse ?? '', r.pmTemp ?? '', r.pmSpo2 ?? ''
+      ].join(','));
+      const csvContent = '\uFEFF' + [header, ...lines].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `生理量測紀錄_${getRangeLabelText().replace(/\s+/g, '')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    window.addEventListener('resize', () => renderAllCharts(getFilteredRecords()));
+  }
+
+  // 初始化
+  window.addEventListener('DOMContentLoaded', () => {
+    loadInitialState();
+    syncMonthSelectors(true);
+    bindEvents();
+    refreshAll();
+    if (gsConfig.url) {
+      pullFromGoogleSheet(false);
+    }
+    startAutoPoll();
+  });
+</script>
+
+</body></html>
