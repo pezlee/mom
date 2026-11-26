@@ -205,12 +205,8 @@
     .elder-font-bar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 14px;
-      padding: 8px 12px;
+      justify-content: flex-end;
+      gap: 6px;
       margin-bottom: 12px;
     }
 
@@ -819,12 +815,9 @@
 
     <!-- 字體大小調整列（因應手機系統字體放大設定） -->
     <div class="elder-font-bar">
-      <span style="font-size:14px; font-weight:800; color:#334155;">🔤 畫面字體大小：</span>
-      <div style="display:flex; gap:6px; align-items:center;">
-        <button type="button" id="elderFontDecBtn" class="elder-font-btn" aria-label="縮小字體">A- 縮小</button>
-        <button type="button" id="elderFontResetBtn" class="elder-font-btn active" aria-label="標準字體">標準</button>
-        <button type="button" id="elderFontIncBtn" class="elder-font-btn" aria-label="放大字體">A+ 放大</button>
-      </div>
+      <button type="button" id="elderFontDecBtn" class="elder-font-btn" aria-label="縮小字體">A- 縮小</button>
+      <button type="button" id="elderFontResetBtn" class="elder-font-btn active" aria-label="標準字體">標準</button>
+      <button type="button" id="elderFontIncBtn" class="elder-font-btn" aria-label="放大字體">A+ 放大</button>
     </div>
 
     <!-- 若在本機檔案開啟，提醒需部署成 https 網址才能分享給手機 -->
