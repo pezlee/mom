@@ -804,7 +804,7 @@
   <div id="elderEntryView" class="elder-panel hidden">
     <div class="elder-header">
       <div>
-        <span style="display:inline-block; background:#fef3c7; color:#92400e; font-size:13px; font-weight:800; padding:3px 10px; border-radius:999px;">📱 手機／平板快速輸入</span>
+        <span style="display:inline-block; background:#fef3c7; color:#92400e; font-size:13px; font-weight:800; padding:3px 10px; border-radius:999px;">📱 快速輸入頁面</span>
         <h2 class="elder-title" style="margin-top:4px;">每日量測紀錄輸入</h2>
       </div>
       <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
@@ -926,23 +926,23 @@
   <div class="card">
     <div class="header-flex">
       <div>
-        <span class="badge">☁️ Google Sheet 線上即時連動版</span>
+        <span class="badge">☁️ 線上即時連動版</span>
         <h1 id="reportMainTitle" contenteditable="true" spellcheck="false" title="點擊可直接編輯報表標題">血壓/脈搏/體溫/血氧濃度量測紀錄表</h1>
       </div>
       <div class="btn-group">
         <button type="button" id="enterElderModeBtn" class="btn btn-amber">📱 快速輸入頁面</button>
-        <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ Apps Script 雙向設定</button>
+        <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ 雙向連線設定</button>
         <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
         <button type="button" id="pushGsNowBtn" class="btn">⬆️ 寫回 Sheet</button>
-        <button type="button" id="exportA4ImgBtn" class="btn btn-emerald">🖼️ 匯出 A4 圖片 (PNG)</button>
-        <button type="button" id="printA4Btn" class="btn">🖨️ 直接列印 A4</button>
+        <button type="button" id="exportA4ImgBtn" class="btn btn-emerald">🖼️ 匯出圖片</button>
+        <button type="button" id="printA4Btn" class="btn">🖨️ 直接列印</button>
       </div>
     </div>
   </div>
 
   <!-- Google Sheet 連線狀態橫幅 -->
   <div id="gsBanner" class="sync-banner disconnected">
-    <div id="gsStatusText" style="font-weight:700;">⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定</div>
+    <div id="gsStatusText" style="font-weight:700;">⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「雙向連線設定」進行設定</div>
   </div>
 
   <!-- 檢視控制列 -->
@@ -1052,7 +1052,7 @@
     <div id="cardChartCombined" class="chart-card">
       <div class="chart-header">
         <div>
-          <h2 class="chart-title">四項生理指標整合趨勢（血壓 / 脈搏 / 血氧 / 體溫）</h2>
+          <h2 class="chart-title">血壓 / 脈搏 / 血氧 / 體溫整合趨勢</h2>
           <p class="chart-sub">左軸：血壓、脈搏、血氧（50–165）｜右軸：體溫（35.5–38.0 °C）</p>
         </div>
         <div class="chart-legend">
@@ -1113,7 +1113,7 @@
 <div id="gsModal" class="modal-backdrop">
   <div class="modal-box">
     <div class="header-flex" style="margin-bottom:12px;">
-      <h2 class="chart-title" style="font-size:18px;">☁️ Google Sheet 線上即時連動設定</h2>
+      <h2 class="chart-title" style="font-size:18px;">☁️ Google Sheet 雙向連線設定</h2>
       <button type="button" id="closeGsModalBtn" class="btn btn-sm">✕ 關閉</button>
     </div>
     <p style="font-size:13px; color:#475569; margin-top:0;">
@@ -1613,6 +1613,11 @@ function doPost(e) {
     return `${getRangeLabelText()} ${currentTitle}`;
   }
 
+  function getConnectedStatusText() {
+    const modeLabel = isAppsScriptUrl(gsConfig.url) ? '已開啟雙向同步模式' : '已開啟即時讀取模式';
+    return `☁️ ${modeLabel}｜目前共 ${records.length} 筆資料`;
+  }
+
   function updateGsBannerUI() {
     const banner = document.getElementById('gsBanner');
     const textEl = document.getElementById('gsStatusText');
@@ -1620,11 +1625,10 @@ function doPost(e) {
 
     if (gsConfig.url) {
       banner.className = 'sync-banner connected';
-      const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式' : '即時讀取模式';
-      textEl.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜目前共 ${records.length} 筆資料`;
+      textEl.textContent = getConnectedStatusText();
     } else {
       banner.className = 'sync-banner disconnected';
-      textEl.textContent = '⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定';
+      textEl.textContent = '⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「雙向連線設定」進行設定';
     }
   }
 
@@ -1810,8 +1814,7 @@ function doPost(e) {
       }
 
       if (statusText) {
-        const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式' : '即時讀取模式';
-        statusText.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜目前共 ${records.length} 筆資料`;
+        statusText.textContent = getConnectedStatusText();
       }
     } catch (err) {
       if (!silent) {
@@ -1828,7 +1831,7 @@ function doPost(e) {
 
   async function pushToAppsScript(manual = false) {
     if (!gsConfig.url) {
-      if (manual) showToast('請先在「Apps Script 雙向設定」填入 /exec 網址', true);
+      if (manual) showToast('請先在「雙向連線設定」填入 /exec 網址', true);
       return;
     }
     if (!isAppsScriptUrl(gsConfig.url)) {
@@ -1863,7 +1866,7 @@ function doPost(e) {
       lastRemoteHash = JSON.stringify(records);
       const statusText = document.getElementById('gsStatusText');
       if (statusText) {
-        statusText.textContent = `☁️ 已連線至 Google Sheet｜雙向同步模式｜目前共 ${records.length} 筆資料`;
+        statusText.textContent = getConnectedStatusText();
       }
       if (manual) {
         showToast(`已送出 ${records.length} 筆資料寫回 Google Sheet`);
@@ -2271,7 +2274,7 @@ function doPost(e) {
       box.style.padding = '7px 10px';
       if (idx === 0) box.style.marginBottom = '10px';
 
-      const sessionTitle = session === 'am' ? '【早上】四項生理指標整合趨勢' : '【晚上】四項生理指標整合趨勢';
+      const sessionTitle = session === 'am' ? '【早上】血壓 / 脈搏 / 血氧 / 體溫整合趨勢' : '【晚上】血壓 / 脈搏 / 血氧 / 體溫整合趨勢';
       box.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:4px;">
           <span style="font-size:12px; font-weight:800; color:#0f172a;">${sessionTitle}</span>
@@ -2584,7 +2587,7 @@ function doPost(e) {
       ctx.lineWidth = 1;
       ctx.strokeRect(padX, boxY, contentW, blockH);
 
-      const sessionLabel = session === 'am' ? '【早上】四項生理指標整合趨勢' : '【晚上】四項生理指標整合趨勢';
+      const sessionLabel = session === 'am' ? '【早上】血壓 / 脈搏 / 血氧 / 體溫整合趨勢' : '【晚上】血壓 / 脈搏 / 血氧 / 體溫整合趨勢';
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 11.5px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
       ctx.textAlign = 'left';
@@ -2606,7 +2609,7 @@ function doPost(e) {
     try {
       outCanvas.toBlob((blob) => {
         if (!blob) {
-          showToast('圖片產生失敗，請改用「直接列印 A4」', true);
+          showToast('圖片產生失敗，請改用「直接列印」', true);
           return;
         }
         const url = URL.createObjectURL(blob);
@@ -2620,7 +2623,7 @@ function doPost(e) {
         showToast('A4 高解析圖片已下載！');
       }, 'image/png');
     } catch (err) {
-      showToast('瀏覽器限制自動下載，請使用「直接列印 A4」另存 PDF', true);
+      showToast('瀏覽器限制自動下載，請使用「直接列印」另存 PDF', true);
     }
   }
 
