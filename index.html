@@ -145,6 +145,17 @@
       border-color: #047857;
     }
 
+    .btn-amber {
+      background: #f59e0b;
+      border-color: #d97706;
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    .btn-amber:hover {
+      background: #d97706;
+    }
+
     .btn-danger {
       background: #fef2f2;
       border-color: #fecaca;
@@ -159,6 +170,243 @@
       background: #0f172a !important;
       border-color: #0f172a !important;
       color: #ffffff !important;
+    }
+
+    /* 長輩友善大字快速輸入模式樣式 */
+    .elder-panel {
+      max-width: 640px;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    }
+
+    .elder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .elder-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .elder-step-label {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 14px 0 8px 0;
+      display: block;
+    }
+
+    .elder-seg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .elder-date-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      gap: 10px;
+    }
+
+    .elder-choice-btn {
+      appearance: none;
+      border: 2px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      border-radius: 16px;
+      padding: 16px 10px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .elder-choice-btn.active-am {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      color: #b45309;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
+
+    .elder-choice-btn.active-pm {
+      background: #eef2ff;
+      border-color: #4f46e5;
+      color: #3730a3;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    .elder-choice-btn.active-date {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #1d4ed8;
+    }
+
+    .elder-date-picker {
+      width: 100%;
+      border: 2px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 12px 10px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      background: #ffffff;
+      text-align: center;
+    }
+
+    .elder-field-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .elder-field-card.alert-box {
+      background: #fef2f2;
+      border-color: #f87171;
+    }
+
+    .elder-field-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .elder-field-name {
+      font-size: 21px;
+      font-weight: 900;
+      color: #0f172a;
+      display: block;
+    }
+
+    .elder-field-hint {
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .elder-field-card.alert-box .elder-field-hint {
+      color: #dc2626;
+      font-weight: 800;
+    }
+
+    .elder-num-input {
+      width: 132px;
+      height: 62px;
+      border: 2px solid #94a3b8;
+      border-radius: 14px;
+      background: #ffffff;
+      font-size: 28px;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      padding: 4px 8px;
+    }
+
+    .elder-num-input:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+    }
+
+    .elder-field-card.alert-box .elder-num-input {
+      color: #dc2626;
+      border-color: #dc2626;
+    }
+
+    .elder-stepper-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .elder-step-btn {
+      appearance: none;
+      width: 44px;
+      height: 62px;
+      border: 2px solid #cbd5e1;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #1e293b;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .elder-step-btn:active {
+      background: #e2e8f0;
+      transform: scale(0.96);
+    }
+
+    .elder-quick-btn {
+      appearance: none;
+      border: 2px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .elder-quick-btn:active {
+      background: #dbeafe;
+    }
+
+    .elder-save-btn {
+      width: 100%;
+      appearance: none;
+      border: none;
+      border-radius: 18px;
+      background: #059669;
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: 900;
+      padding: 18px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.4);
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+
+    .elder-save-btn:active {
+      transform: scale(0.98);
+    }
+
+    .elder-save-btn:hover {
+      background: #047857;
+    }
+
+    .elder-recent-box {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 2px dashed #e2e8f0;
     }
 
     /* Google Sheet 連線狀態橫幅 */
@@ -462,11 +710,11 @@
       right: 20px;
       background: #0f172a;
       color: #ffffff;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
       z-index: 200;
       opacity: 0;
       transform: translateY(10px);
@@ -511,14 +759,130 @@
 <body>
 
 <div id="appMain" class="container">
+  <!-- 長輩友善大字快速輸入畫面（手機／平板專屬） -->
+  <div id="elderEntryView" class="elder-panel hidden">
+    <div class="elder-header">
+      <div>
+        <span style="display:inline-block; background:#fef3c7; color:#92400e; font-size:13px; font-weight:800; padding:3px 10px; border-radius:999px;">📱 手機／平板簡易大字版</span>
+        <h2 class="elder-title" style="margin-top:4px;">每日量測紀錄輸入</h2>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+        <button type="button" id="exitElderModeBtn" class="btn" style="font-size:14px; padding:8px 12px;">📊 切換完整報表</button>
+        <button type="button" id="copyElderLinkBtn" class="btn" style="font-size:13px; padding:6px 10px; background:#eff6ff; border-color:#93c5fd; color:#1d4ed8;">🔗 複製長輩專用網址</button>
+      </div>
+    </div>
+
+    <!-- 若在本機檔案開啟，提醒需部署成 https 網址才能分享給手機 -->
+    <div id="localFileShareTip" class="hidden" style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:14px; line-height:1.5;">
+      <strong>💡 分享給媽媽手機的小提醒：</strong><br>
+      您目前是在本機電腦檔案開啟（<code>file://</code>），直接複製網址傳到 LINE 會顯示「無法讀取檔案」。請將此 HTML 上傳到免費網頁空間（如 GitHub Pages / Netlify / Vercel）取得 <code>https://</code> 網址後再複製分享，或直接把 HTML 檔案傳給媽媽用手機瀏覽器開啟。
+    </div>
+
+    <!-- 第一步：選日期 -->
+    <label class="elder-step-label">1. 請選擇量測日期：</label>
+    <div class="elder-date-grid">
+      <button type="button" id="elderTodayBtn" class="elder-choice-btn active-date">今天</button>
+      <button type="button" id="elderYesterdayBtn" class="elder-choice-btn">昨天</button>
+      <input type="date" id="elderDatePicker" class="elder-date-picker" aria-label="自選日期" />
+    </div>
+    <div id="elderDateDisplay" style="margin-top:8px; font-size:16px; font-weight:800; color:#1d4ed8;">目前日期：2026/11/26</div>
+
+    <!-- 第二步：選早上或晚上 -->
+    <label class="elder-step-label">2. 請選擇時段：</label>
+    <div class="elder-seg-grid">
+      <button type="button" id="elderAmBtn" class="elder-choice-btn active-am">☀️ 早上量測</button>
+      <button type="button" id="elderPmBtn" class="elder-choice-btn">🌙 晚上量測</button>
+    </div>
+
+    <!-- 第三步：大字輸入五項數字 -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin: 14px 0 8px 0;">
+      <label class="elder-step-label" style="margin:0;">3. 請輸入量測數字（可按 －/＋ 微調）：</label>
+      <button type="button" id="elderCopyPrevBtn" class="elder-quick-btn">📋 帶入上次同段數值</button>
+    </div>
+
+    <div id="elderCardSbp" class="elder-field-card">
+      <div class="elder-field-info">
+        <span class="elder-field-name">收縮壓（高壓）</span>
+        <span id="elderHintSbp" class="elder-field-hint">正常參考 ≤ 140 mmHg</span>
+      </div>
+      <div class="elder-stepper-wrap">
+        <button type="button" class="elder-step-btn" data-step-target="elderInputSbp" data-step-delta="-1" aria-label="收縮壓減1">－</button>
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="elderInputSbp" class="elder-num-input" placeholder="120" />
+        <button type="button" class="elder-step-btn" data-step-target="elderInputSbp" data-step-delta="1" aria-label="收縮壓加1">＋</button>
+      </div>
+    </div>
+
+    <div id="elderCardDbp" class="elder-field-card">
+      <div class="elder-field-info">
+        <span class="elder-field-name">舒張壓（低壓）</span>
+        <span id="elderHintDbp" class="elder-field-hint">正常參考 ≤ 90 mmHg</span>
+      </div>
+      <div class="elder-stepper-wrap">
+        <button type="button" class="elder-step-btn" data-step-target="elderInputDbp" data-step-delta="-1" aria-label="舒張壓減1">－</button>
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="elderInputDbp" class="elder-num-input" placeholder="80" />
+        <button type="button" class="elder-step-btn" data-step-target="elderInputDbp" data-step-delta="1" aria-label="舒張壓加1">＋</button>
+      </div>
+    </div>
+
+    <div id="elderCardPulse" class="elder-field-card">
+      <div class="elder-field-info">
+        <span class="elder-field-name">脈搏（心跳）</span>
+        <span id="elderHintPulse" class="elder-field-hint">正常參考 ≤ 80 次/分</span>
+      </div>
+      <div class="elder-stepper-wrap">
+        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="-1" aria-label="脈搏減1">－</button>
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="elderInputPulse" class="elder-num-input" placeholder="68" />
+        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="1" aria-label="脈搏加1">＋</button>
+      </div>
+    </div>
+
+    <div id="elderCardTemp" class="elder-field-card">
+      <div class="elder-field-info">
+        <span class="elder-field-name">體溫（°C）</span>
+        <span id="elderHintTemp" class="elder-field-hint">正常參考 ≤ 37.0 °C</span>
+      </div>
+      <div class="elder-stepper-wrap">
+        <button type="button" class="elder-step-btn" data-step-target="elderInputTemp" data-step-delta="-0.1" aria-label="體溫減0.1">－</button>
+        <input type="number" inputmode="decimal" step="0.1" id="elderInputTemp" class="elder-num-input" placeholder="36.5" />
+        <button type="button" class="elder-step-btn" data-step-target="elderInputTemp" data-step-delta="0.1" aria-label="體溫加0.1">＋</button>
+      </div>
+    </div>
+
+    <div id="elderCardSpo2" class="elder-field-card">
+      <div class="elder-field-info">
+        <span class="elder-field-name">血氧濃度（%）</span>
+        <span id="elderHintSpo2" class="elder-field-hint">正常參考 ≥ 95 %</span>
+      </div>
+      <div class="elder-stepper-wrap">
+        <button type="button" class="elder-step-btn" data-step-target="elderInputSpo2" data-step-delta="-1" aria-label="血氧減1">－</button>
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="elderInputSpo2" class="elder-num-input" placeholder="97" />
+        <button type="button" class="elder-step-btn" data-step-target="elderInputSpo2" data-step-delta="1" aria-label="血氧加1">＋</button>
+      </div>
+    </div>
+
+    <button type="button" id="elderSaveBtn" class="elder-save-btn">✅ 儲存這筆量測紀錄</button>
+    <div id="elderSyncNotice" style="text-align:center; font-size:14px; font-weight:700; color:#475569; margin-top:10px;">
+      儲存後會自動保留在紀錄表中
+    </div>
+
+    <!-- 最近 3 天量測紀錄核對卡（大字版） -->
+    <div class="elder-recent-box">
+      <div style="font-size:17px; font-weight:900; color:#0f172a; margin-bottom:8px;">📋 最近已儲存的紀錄（點選可修改）：</div>
+      <div id="elderRecentList" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- 完整門診報表主畫面 -->
+  <div id="standardReportView">
   <!-- 頁首 -->
   <div class="card">
     <div class="header-flex">
       <div>
         <span class="badge">☁️ Google Sheet 線上即時連動版</span>
-        <h1 id="reportMainTitle" contenteditable="true" spellcheck="false" title="點擊可直接編輯報表標題">血壓/脈搏/體溫/血氧濃度<span style="font-family: &quot;Noto Sans TC&quot;, &quot;PingFang TC&quot;, &quot;Microsoft JhengHei&quot;, -apple-system, BlinkMacSystemFont, sans-serif;">量測紀錄表</span></h1>
+        <h1 id="reportMainTitle" contenteditable="true" spellcheck="false" title="點擊可直接編輯報表標題">血壓/脈搏/體溫/血氧濃度量測紀錄表</h1>
       </div>
       <div class="btn-group">
+        <button type="button" id="enterElderModeBtn" class="btn btn-amber">👵 長輩大字快速輸入</button>
         <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ Apps Script 雙向設定</button>
         <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
         <button type="button" id="pushGsNowBtn" class="btn">⬆️ 寫回 Sheet</button>
@@ -529,9 +893,9 @@
   </div>
 
   <!-- Google Sheet 連線狀態與開放編輯列 -->
-  <div id="gsBanner" class="sync-banner connected">
+  <div id="gsBanner" class="sync-banner disconnected">
     <div style="flex:1; min-width:260px;">
-      <div id="gsStatusText" style="font-weight:700;">☁️ 已連線至 Google Sheet｜即時讀取模式（Published CSV）｜最後同步：16:01:45（共 61 筆）</div>
+      <div id="gsStatusText" style="font-weight:700;">⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定</div>
     </div>
     <div class="btn-group">
       <span style="font-size:12px; color:#475569;">手動同步模式（需更新時請點「立即同步」）</span>
@@ -544,9 +908,9 @@
       <!-- 月份區間選擇（最小單位 1 個月） -->
       <div class="control-block">
         <span class="control-label">月份區間：</span>
-        <select id="startMonthSelect" class="select-box" aria-label="起始月份"><option value="2026-09">2026年9月</option><option value="2026-10">2026年10月</option></select>
+        <select id="startMonthSelect" class="select-box" aria-label="起始月份"></select>
         <span style="font-size:13px; color:#64748b;">至</span>
-        <select id="endMonthSelect" class="select-box" aria-label="結束月份"><option value="2026-09">2026年9月</option><option value="2026-10">2026年10月</option></select>
+        <select id="endMonthSelect" class="select-box" aria-label="結束月份"></select>
         <button type="button" id="btnSingleMonth" class="btn btn-sm">單月</button>
         <button type="button" id="btnThreeMonths" class="btn btn-sm">近三月</button>
         <button type="button" id="btnAllMonths" class="btn btn-sm">全部</button>
@@ -564,7 +928,7 @@
       <div class="control-block">
         <span class="control-label">A4 方向：</span>
         <select id="a4OrientationSelect" class="select-box" aria-label="A4 方向">
-          <option value="landscape" selected="">A4 橫式（推薦）</option>
+          <option value="landscape" selected>A4 橫式（推薦）</option>
           <option value="portrait">A4 直式</option>
         </select>
       </div>
@@ -581,28 +945,7 @@
   </div>
 
   <!-- 統計摘要卡片 -->
-  <div id="kpiGrid" class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-title"><span>平均血壓 (mmHg)</span><span style="color:#dc2626">超標 2 次</span></div>
-        <div class="kpi-main" style="font-size:17px;">早 123.9/78.1 ｜ 晚 111.1/70.2</div>
-        <div class="kpi-sub">紅字門檻：收縮 &gt; 140 或 舒張 &gt; 90</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title"><span>平均脈搏 (次/分)</span><span style="color:#059669">超標 0 次</span></div>
-        <div class="kpi-main">早 64.2 ｜ 晚 59.2 次/分</div>
-        <div class="kpi-sub">區間最高：71 次/分（&gt; 80 標紅）</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title"><span>平均體溫 (°C)</span><span style="color:#059669">超標 0 次</span></div>
-        <div class="kpi-main">早 36.5 ｜ 晚 36.2 °C</div>
-        <div class="kpi-sub">區間最高：36.9 °C（&gt; 37.0 標紅）</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title"><span>平均血氧濃度 (%)</span><span>正常參考 ≥ 95%</span></div>
-        <div class="kpi-main">96.2 %</div>
-        <div class="kpi-sub">統計區間：2026年10月（共 31 天）</div>
-      </div>
-    </div>
+  <div id="kpiGrid" class="kpi-grid"></div>
 
   <!-- 圖表展示區 -->
   <div class="charts-stack">
@@ -622,7 +965,7 @@
         </div>
       </div>
       <div class="canvas-box">
-        <canvas id="canvasBP" class="chart-canvas" width="2428" height="540"></canvas>
+        <canvas id="canvasBP" class="chart-canvas"></canvas>
       </div>
     </div>
 
@@ -640,7 +983,7 @@
         </div>
       </div>
       <div class="canvas-box">
-        <canvas id="canvasPulse" class="chart-canvas" width="2428" height="540"></canvas>
+        <canvas id="canvasPulse" class="chart-canvas"></canvas>
       </div>
     </div>
 
@@ -658,7 +1001,7 @@
         </div>
       </div>
       <div class="canvas-box">
-        <canvas id="canvasTemp" class="chart-canvas" width="2428" height="540"></canvas>
+        <canvas id="canvasTemp" class="chart-canvas"></canvas>
       </div>
     </div>
 
@@ -670,14 +1013,14 @@
           <p class="chart-sub">左軸：血壓、脈搏、血氧（50–165）｜右軸：體溫（35.5–38.0 °C）</p>
         </div>
         <div class="chart-legend">
-          <label><input type="checkbox" class="comb-toggle" value="bp" checked=""> 血壓</label>
-          <label><input type="checkbox" class="comb-toggle" value="pulse" checked=""> 脈搏</label>
-          <label><input type="checkbox" class="comb-toggle" value="spo2" checked=""> 血氧</label>
-          <label><input type="checkbox" class="comb-toggle" value="temp" checked=""> 體溫</label>
+          <label><input type="checkbox" class="comb-toggle" value="bp" checked> 血壓</label>
+          <label><input type="checkbox" class="comb-toggle" value="pulse" checked> 脈搏</label>
+          <label><input type="checkbox" class="comb-toggle" value="spo2" checked> 血氧</label>
+          <label><input type="checkbox" class="comb-toggle" value="temp" checked> 體溫</label>
         </div>
       </div>
       <div class="canvas-box tall">
-        <canvas id="canvasCombined" class="chart-canvas" width="2428" height="680"></canvas>
+        <canvas id="canvasCombined" class="chart-canvas"></canvas>
       </div>
     </div>
   </div>
@@ -687,7 +1030,7 @@
     <div class="header-flex" style="margin-bottom:12px;">
       <div>
         <h2 class="chart-title">逐日量測明細紀錄（可直接點擊修改）</h2>
-        <p id="tableRangeSummary" class="chart-sub">目前檢視區間：2026年10月（顯示 31 筆 / 總計 61 筆）</p>
+        <p id="tableRangeSummary" class="chart-sub">目前檢視區間：全部資料</p>
       </div>
       <div class="btn-group">
         <button type="button" id="addRowBtn" class="btn btn-sm btn-primary">＋ 新增一筆日期</button>
@@ -713,444 +1056,11 @@
             <th>操作</th>
           </tr>
         </thead>
-        <tbody id="recordsTbody">
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="30" data-field="date" value="2026/10/1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amSbp" value="118"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amDbp" value="72"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="30" data-field="amTemp" value="36.5"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmSbp" value="114"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmDbp" value="77"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmPulse" value="59"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="30" data-field="pmTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="30" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="30">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="31" data-field="date" value="2026/10/2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amSbp" value="126"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amDbp" value="73"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amPulse" value="69"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="31" data-field="amTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="amSpo2" value="97"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmSbp" value="105"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmDbp" value="69"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmPulse" value="59"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="31" data-field="pmTemp" value="36.3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="31" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="31">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="32" data-field="date" value="2026/10/3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amSbp" value="109"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amDbp" value="74"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="32" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmSbp" value="108"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmDbp" value="73"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmPulse" value="66"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="32" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="32" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="32">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="33" data-field="date" value="2026/10/4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amSbp" value="130"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amDbp" value="82"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amPulse" value="68"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="33" data-field="amTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmSbp" value="126"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmDbp" value="79"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmPulse" value="60"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="33" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="33" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="33">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="34" data-field="date" value="2026/10/5"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amSbp" value="128"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amDbp" value="78"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amPulse" value="65"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="34" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmSbp" value="112"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmDbp" value="78"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="34" data-field="pmTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="34" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="34">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="35" data-field="date" value="2026/10/6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amSbp" value="136"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amDbp" value="83"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amPulse" value="68"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="35" data-field="amTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmSbp" value="89"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmDbp" value="57"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmPulse" value="60"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="35" data-field="pmTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="35" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="35">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="36" data-field="date" value="2026/10/7"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amSbp" value="128"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amDbp" value="80"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="36" data-field="amTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="amSpo2" value="98"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmSbp" value="101"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmDbp" value="65"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmPulse" value="58"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="36" data-field="pmTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="36" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="36">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="37" data-field="date" value="2026/10/8"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amSbp" value="120"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amDbp" value="68"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amPulse" value="64"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="37" data-field="amTemp" value="36.5"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmSbp" value="108"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmDbp" value="65"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmPulse" value="53"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="37" data-field="pmTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="37" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="37">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="38" data-field="date" value="2026/10/9"></td>
-          <td><input type="number" step="1" class="cell-input val-alert" data-idx="38" data-field="amSbp" value="142"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amDbp" value="90"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amPulse" value="59"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="38" data-field="amTemp" value="36.8"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmSbp" value="121"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmDbp" value="75"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmPulse" value="55"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="38" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="38" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="38">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="39" data-field="date" value="2026/10/10"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amSbp" value="121"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amDbp" value="75"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amPulse" value="58"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="39" data-field="amTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmSbp" value="129"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmDbp" value="81"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmPulse" value="58"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="39" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="39" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="39">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="40" data-field="date" value="2026/10/11"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amSbp" value="123"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amPulse" value="66"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="40" data-field="amTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmSbp" value="112"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmDbp" value="73"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmPulse" value="56"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="40" data-field="pmTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="40" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="40">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="41" data-field="date" value="2026/10/12"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amSbp" value="110"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amDbp" value="78"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="41" data-field="amTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmSbp" value="103"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmDbp" value="64"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmPulse" value="66"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="41" data-field="pmTemp" value="36.3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="41" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="41">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="42" data-field="date" value="2026/10/13"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amSbp" value="138"></td>
-          <td><input type="number" step="1" class="cell-input val-alert" data-idx="42" data-field="amDbp" value="95"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amPulse" value="71"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="42" data-field="amTemp" value="36.8"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmSbp" value="114"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmDbp" value="69"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmPulse" value="56"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="42" data-field="pmTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="42" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="42">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="43" data-field="date" value="2026/10/14"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amSbp" value="120"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amDbp" value="73"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="43" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmSbp" value="124"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmDbp" value="82"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmPulse" value="68"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="43" data-field="pmTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="43" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="43">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="44" data-field="date" value="2026/10/15"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amSbp" value="113"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amDbp" value="74"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amPulse" value="60"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="44" data-field="amTemp" value="36.9"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmSbp" value="117"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmDbp" value="75"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmPulse" value="54"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="44" data-field="pmTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="44" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="44">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="45" data-field="date" value="2026/10/16"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amSbp" value="134"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amDbp" value="79"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amPulse" value="69"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="45" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmSbp" value="118"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmPulse" value="54"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="45" data-field="pmTemp" value="36.3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="45" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="45">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="46" data-field="date" value="2026/10/17"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amSbp" value="104"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amDbp" value="72"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amPulse" value="61"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="46" data-field="amTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmSbp" value="103"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmDbp" value="62"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmPulse" value="54"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="46" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="46" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="46">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="47" data-field="date" value="2026/10/18"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amSbp" value="124"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amDbp" value="79"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amPulse" value="60"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="47" data-field="amTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmSbp" value="122"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmDbp" value="74"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmPulse" value="60"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="47" data-field="pmTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="47" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="47">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="48" data-field="date" value="2026/10/19"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amSbp" value="138"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amDbp" value="85"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amPulse" value="64"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="48" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmSbp" value="124"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmDbp" value="80"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmPulse" value="58"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="48" data-field="pmTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="48" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="48">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="49" data-field="date" value="2026/10/20"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amSbp" value="126"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amDbp" value="77"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amPulse" value="71"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="49" data-field="amTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmSbp" value="90"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmDbp" value="57"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="49" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="49" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="49">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="50" data-field="date" value="2026/10/21"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amSbp" value="133"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amDbp" value="83"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amPulse" value="64"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="50" data-field="amTemp" value="36.7"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmSbp" value="100"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmDbp" value="61"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmPulse" value="66"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="50" data-field="pmTemp" value="36.5"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="50" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="50">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="51" data-field="date" value="2026/10/22"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amSbp" value="123"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amDbp" value="80"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="51" data-field="amTemp" value="36.7"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmSbp" value="126"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmPulse" value="63"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="51" data-field="pmTemp" value="36.2"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="51" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="51">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="52" data-field="date" value="2026/10/23"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amSbp" value="127"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amDbp" value="79"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="52" data-field="amTemp" value="36.7"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmSbp" value="97"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmDbp" value="65"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="52" data-field="pmTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="52" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="52">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="53" data-field="date" value="2026/10/24"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amSbp" value="118"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amDbp" value="69"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amPulse" value="58"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="53" data-field="amTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmSbp" value="122"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmPulse" value="54"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="53" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="53" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="53">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="54" data-field="date" value="2026/10/25"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amSbp" value="111"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amPulse" value="67"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="54" data-field="amTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmSbp" value="106"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmDbp" value="64"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmPulse" value="57"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="54" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="54" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="54">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="55" data-field="date" value="2026/10/26"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amSbp" value="129"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amDbp" value="83"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amPulse" value="65"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="55" data-field="amTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmSbp" value="101"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmDbp" value="64"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmPulse" value="62"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="55" data-field="pmTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="55" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="55">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="56" data-field="date" value="2026/10/27"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amSbp" value="127"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amDbp" value="81"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amPulse" value="67"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="56" data-field="amTemp" value="36.9"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmSbp" value="106"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmDbp" value="63"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmPulse" value="57"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="56" data-field="pmTemp" value="36.4"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="56" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="56">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="57" data-field="date" value="2026/10/28"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amSbp" value="120"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amDbp" value="78"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amPulse" value="59"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="57" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmSbp" value="102"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmDbp" value="65"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmPulse" value="67"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="57" data-field="pmTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="57" data-field="pmSpo2" value="97"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="57">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="58" data-field="date" value="2026/10/29"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amSbp" value="127"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amPulse" value="69"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="58" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmSbp" value="119"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmDbp" value="74"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmPulse" value="53"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="58" data-field="pmTemp" value="36.3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="58" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="58">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="59" data-field="date" value="2026/10/30"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amSbp" value="116"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amDbp" value="77"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amPulse" value="61"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="59" data-field="amTemp" value="36.3"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmSbp" value="104"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmDbp" value="66"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmPulse" value="59"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="59" data-field="pmTemp" value="36.1"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="59" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="59">刪除</button></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="cell-input date-input" data-idx="60" data-field="date" value="2026/10/31"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amSbp" value="123"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amDbp" value="76"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amPulse" value="69"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="60" data-field="amTemp" value="36.6"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="amSpo2" value="96"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmSbp" value="121"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmDbp" value="72"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmPulse" value="57"></td>
-          <td><input type="number" step="0.1" class="cell-input" data-idx="60" data-field="pmTemp" value="36"></td>
-          <td><input type="number" step="1" class="cell-input" data-idx="60" data-field="pmSpo2" value="96"></td>
-          <td><button type="button" class="btn btn-sm btn-danger" data-del-idx="60">刪除</button></td>
-        </tr></tbody>
+        <tbody id="recordsTbody"></tbody>
       </table>
     </div>
   </div>
+  </div><!-- /#standardReportView -->
 </div>
 
 <!-- 列印專用掛載區 -->
@@ -1252,7 +1162,7 @@ function doPost(e) {
   const STORAGE_RECORDS_KEY = 'clinic_vitals_online_records_v1';
   const STORAGE_GS_KEY = 'clinic_vitals_gs_config_v1';
   const STORAGE_TITLE_KEY = 'clinic_vitals_report_title_v1';
-  // 固定預設連動的 CSV / Google Sheet 網址：未調整時自動保留，不需每次重新輸入
+  const STORAGE_ELDER_MODE_KEY = 'clinic_vitals_elder_mode_v1';
   const DEFAULT_GS_URL = '';
   const THRESHOLDS = {
     sbp: 140,
@@ -1262,13 +1172,18 @@ function doPost(e) {
   };
 
   let records = [];
-  let gsConfig = { url: DEFAULT_GS_URL, autoPoll: true };
+  let gsConfig = { url: DEFAULT_GS_URL };
   let reportTitle = '門診生理量測趨勢與 A4 報表工具';
   let startMonth = '';
   let endMonth = '';
-  let chartMode = 'independent'; // 'independent' | 'combined' | 'all'
+  let chartMode = 'all'; // 'independent' | 'combined' | 'all'
   let lastRemoteHash = '';
   let toastTimer = null;
+
+  // 長輩大字快速輸入狀態
+  let isElderMode = false;
+  let elderSelectedDate = ''; // YYYY/M/D
+  let elderSelectedSession = 'am'; // 'am' | 'pm'
 
   function showToast(msg, isAlert = false) {
     const el = document.getElementById('toast');
@@ -1278,7 +1193,7 @@ function doPost(e) {
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       el.classList.remove('show');
-    }, 3200);
+    }, 3600);
   }
 
   function toNum(v) {
@@ -1309,6 +1224,19 @@ function doPost(e) {
       return `${year}/${parseInt(md[1], 10)}/${parseInt(md[2], 10)}`;
     }
     return s;
+  }
+
+  function toIsoInputDate(normDateStr) {
+    const norm = normalizeDateStr(normDateStr);
+    const m = norm.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+    if (!m) return '';
+    return `${m[1]}-${String(parseInt(m[2], 10)).padStart(2, '0')}-${String(parseInt(m[3], 10)).padStart(2, '0')}`;
+  }
+
+  function getOffsetDateStr(daysOffset = 0) {
+    const d = new Date();
+    d.setDate(d.getDate() + daysOffset);
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
   }
 
   function getDateSortKey(dateStr) {
@@ -1356,9 +1284,23 @@ function doPost(e) {
         const parsed = JSON.parse(savedRecs);
         if (Array.isArray(parsed)) records = sortRecords(parsed);
       }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramGs = urlParams.get('gs');
+      if (paramGs) {
+        gsConfig.url = paramGs.trim();
+        localStorage.setItem(STORAGE_GS_KEY, JSON.stringify(gsConfig));
+      }
+      const savedElder = localStorage.getItem(STORAGE_ELDER_MODE_KEY);
+      if (urlParams.get('mode') === 'elder' || savedElder === '1') {
+        isElderMode = true;
+      }
     } catch (e) {
       console.warn('讀取本機快取失敗', e);
     }
+
+    elderSelectedDate = getOffsetDateStr(0);
+    elderSelectedSession = new Date().getHours() < 15 ? 'am' : 'pm';
   }
 
   function saveState(skipPush = false) {
@@ -1377,6 +1319,171 @@ function doPost(e) {
     return /script\.google\.com\/macros\/s\//.test(String(url || ''));
   }
 
+  function isLocalOrSandboxUrl() {
+    const proto = window.location.protocol;
+    const href = window.location.href;
+    return proto === 'file:' || proto === 'blob:' || proto === 'about:' || href.startsWith('null');
+  }
+
+  /* ================= 長輩友善大字快速輸入邏輯 ================= */
+  function setElderMode(enabled) {
+    isElderMode = !!enabled;
+    try {
+      localStorage.setItem(STORAGE_ELDER_MODE_KEY, isElderMode ? '1' : '0');
+    } catch (e) {}
+
+    const elderView = document.getElementById('elderEntryView');
+    const stdView = document.getElementById('standardReportView');
+    const localTip = document.getElementById('localFileShareTip');
+    if (elderView) elderView.classList.toggle('hidden', !isElderMode);
+    if (stdView) stdView.classList.toggle('hidden', isElderMode);
+    if (localTip) localTip.classList.toggle('hidden', !isLocalOrSandboxUrl());
+
+    if (isElderMode) {
+      syncElderFormFromRecord();
+      renderElderRecentList();
+    } else {
+      refreshAll();
+    }
+  }
+
+  function updateElderAlertStyles() {
+    const checks = [
+      { id: 'elderInputSbp', card: 'elderCardSbp', hint: 'elderHintSbp', type: 'sbp', okText: '正常參考 ≤ 140 mmHg', warnText: '⚠️ 偏高（超過 140）' },
+      { id: 'elderInputDbp', card: 'elderCardDbp', hint: 'elderHintDbp', type: 'dbp', okText: '正常參考 ≤ 90 mmHg', warnText: '⚠️ 偏高（超過 90）' },
+      { id: 'elderInputPulse', card: 'elderCardPulse', hint: 'elderHintPulse', type: 'pulse', okText: '正常參考 ≤ 80 次/分', warnText: '⚠️ 偏快（超過 80）' },
+      { id: 'elderInputTemp', card: 'elderCardTemp', hint: 'elderHintTemp', type: 'temp', okText: '正常參考 ≤ 37.0 °C', warnText: '⚠️ 偏高（超過 37.0）' }
+    ];
+    checks.forEach(c => {
+      const inp = document.getElementById(c.id);
+      const card = document.getElementById(c.card);
+      const hint = document.getElementById(c.hint);
+      if (!inp || !card || !hint) return;
+      const over = isAlertVal(c.type, inp.value);
+      card.classList.toggle('alert-box', over);
+      hint.textContent = over ? c.warnText : c.okText;
+    });
+
+    const spo2Inp = document.getElementById('elderInputSpo2');
+    const spo2Card = document.getElementById('elderCardSpo2');
+    const spo2Hint = document.getElementById('elderHintSpo2');
+    if (spo2Inp && spo2Card && spo2Hint) {
+      const val = toNum(spo2Inp.value);
+      const low = val !== null && val < 95;
+      spo2Card.classList.toggle('alert-box', low);
+      spo2Hint.textContent = low ? '⚠️ 血氧偏低（低於 95%）' : '正常參考 ≥ 95 %';
+    }
+  }
+
+  function syncElderFormFromRecord() {
+    const todayStr = getOffsetDateStr(0);
+    const yestStr = getOffsetDateStr(-1);
+    const todayBtn = document.getElementById('elderTodayBtn');
+    const yestBtn = document.getElementById('elderYesterdayBtn');
+    const picker = document.getElementById('elderDatePicker');
+    const dateDisp = document.getElementById('elderDateDisplay');
+
+    if (todayBtn) todayBtn.classList.toggle('active-date', elderSelectedDate === todayStr);
+    if (yestBtn) yestBtn.classList.toggle('active-date', elderSelectedDate === yestStr);
+    if (picker) picker.value = toIsoInputDate(elderSelectedDate);
+    if (dateDisp) {
+      const tag = elderSelectedDate === todayStr ? '（今天）' : (elderSelectedDate === yestStr ? '（昨天）' : '');
+      dateDisp.textContent = `目前日期：${elderSelectedDate} ${tag}`;
+    }
+
+    const amBtn = document.getElementById('elderAmBtn');
+    const pmBtn = document.getElementById('elderPmBtn');
+    if (amBtn) amBtn.classList.toggle('active-am', elderSelectedSession === 'am');
+    if (pmBtn) pmBtn.classList.toggle('active-pm', elderSelectedSession === 'pm');
+
+    const existing = records.find(r => normalizeDateStr(r.date) === elderSelectedDate);
+    const isAm = elderSelectedSession === 'am';
+
+    document.getElementById('elderInputSbp').value = existing ? (isAm ? (existing.amSbp ?? '') : (existing.pmSbp ?? '')) : '';
+    document.getElementById('elderInputDbp').value = existing ? (isAm ? (existing.amDbp ?? '') : (existing.pmDbp ?? '')) : '';
+    document.getElementById('elderInputPulse').value = existing ? (isAm ? (existing.amPulse ?? '') : (existing.pmPulse ?? '')) : '';
+    document.getElementById('elderInputTemp').value = existing ? (isAm ? (existing.amTemp ?? '') : (existing.pmTemp ?? '')) : '';
+    document.getElementById('elderInputSpo2').value = existing ? (isAm ? (existing.amSpo2 ?? '') : (existing.pmSpo2 ?? '')) : '';
+
+    const notice = document.getElementById('elderSyncNotice');
+    if (notice) {
+      notice.textContent = gsConfig.url && isAppsScriptUrl(gsConfig.url)
+        ? '☁️ 已連線試算表，按儲存後會自動同步上傳'
+        : '📱 已開啟單機快速記錄，按儲存後會保留在表格中';
+    }
+
+    updateElderAlertStyles();
+  }
+
+  function renderElderRecentList() {
+    const box = document.getElementById('elderRecentList');
+    if (!box) return;
+    const recent = [...records].slice(-3).reverse();
+    if (!recent.length) {
+      box.innerHTML = '<div style="font-size:15px; color:#64748b;">目前還沒有任何紀錄，填好上方數字按綠色儲存鍵即可！</div>';
+      return;
+    }
+    box.innerHTML = recent.map(r => {
+      const amStr = (r.amSbp || r.amDbp || r.amPulse) ? `早 ${r.amSbp ?? '-'}/${r.amDbp ?? '-'} (脈${r.amPulse ?? '-'})` : '早 尚未填寫';
+      const pmStr = (r.pmSbp || r.pmDbp || r.pmPulse) ? `晚 ${r.pmSbp ?? '-'}/${r.pmDbp ?? '-'} (脈${r.pmPulse ?? '-'})` : '晚 尚未填寫';
+      return `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:10px 12px;">
+          <div>
+            <div style="font-size:17px; font-weight:900; color:#0f172a;">${r.date}</div>
+            <div style="font-size:14px; color:#334155; font-weight:600;">${amStr} ｜ ${pmStr}</div>
+          </div>
+          <button type="button" class="btn" data-elder-edit-date="${r.date}" style="font-size:15px; padding:8px 12px; font-weight:800;">修改</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function saveElderEntry() {
+    const sbp = toNum(document.getElementById('elderInputSbp').value);
+    const dbp = toNum(document.getElementById('elderInputDbp').value);
+    const pulse = toNum(document.getElementById('elderInputPulse').value);
+    const temp = toNum(document.getElementById('elderInputTemp').value);
+    const spo2 = toNum(document.getElementById('elderInputSpo2').value);
+
+    if (sbp === null && dbp === null && pulse === null && temp === null && spo2 === null) {
+      showToast('請至少輸入一項量測數字再儲存喔！', true);
+      return;
+    }
+
+    let target = records.find(r => normalizeDateStr(r.date) === elderSelectedDate);
+    if (!target) {
+      target = {
+        date: elderSelectedDate,
+        amSbp: null, amDbp: null, amPulse: null, amTemp: null, amSpo2: null,
+        pmSbp: null, pmDbp: null, pmPulse: null, pmTemp: null, pmSpo2: null
+      };
+      records.push(target);
+    }
+
+    if (elderSelectedSession === 'am') {
+      target.amSbp = sbp;
+      target.amDbp = dbp;
+      target.amPulse = pulse;
+      target.amTemp = temp;
+      target.amSpo2 = spo2;
+    } else {
+      target.pmSbp = sbp;
+      target.pmDbp = dbp;
+      target.pmPulse = pulse;
+      target.pmTemp = temp;
+      target.pmSpo2 = spo2;
+    }
+
+    records = sortRecords(records);
+    saveState(false);
+    syncMonthSelectors(false);
+    renderElderRecentList();
+
+    const sessionName = elderSelectedSession === 'am' ? '早上' : '晚上';
+    showToast(`✅ 已成功儲存 ${elderSelectedDate} ${sessionName}紀錄！`);
+  }
+
+  /* ================= 標準報表與圖表邏輯 ================= */
   function getAvailableMonths() {
     const set = new Set();
     records.forEach(r => {
@@ -1442,8 +1549,7 @@ function doPost(e) {
   function updateGsBannerUI() {
     const banner = document.getElementById('gsBanner');
     const textEl = document.getElementById('gsStatusText');
-    const toggle = document.getElementById('autoPollToggle');
-    if (toggle) toggle.checked = !!gsConfig.autoPoll;
+    if (!banner || !textEl) return;
 
     if (gsConfig.url) {
       banner.className = 'sync-banner connected';
@@ -1625,7 +1731,12 @@ function doPost(e) {
           records = parsed;
           saveState(true);
           syncMonthSelectors(false);
-          refreshAll();
+          if (isElderMode) {
+            syncElderFormFromRecord();
+            renderElderRecentList();
+          } else {
+            refreshAll();
+          }
           if (!silent) showToast(`已從 Google Sheet 同步 ${parsed.length} 筆最新紀錄`);
         } else if (!silent) {
           showToast(`已是最新資料（共 ${parsed.length} 筆）`);
@@ -1747,7 +1858,7 @@ function doPost(e) {
     if (filtered.length === 0) {
       grid.innerHTML = `
         <div class="kpi-card" style="grid-column: 1 / -1; text-align:center; padding:24px; color:#64748b;">
-          目前檢視區間尚無量測紀錄，請先設定 Google Sheet 連線或點擊「＋ 新增一筆日期」。
+          目前檢視區間尚無量測紀錄，請先設定 Google Sheet 連線或點擊「👵 長輩大字快速輸入」新增紀錄。
         </div>`;
       return;
     }
@@ -2022,6 +2133,11 @@ function doPost(e) {
   }
 
   function refreshAll() {
+    if (isElderMode) {
+      syncElderFormFromRecord();
+      renderElderRecentList();
+      return;
+    }
     const filtered = getFilteredRecords();
     updateGsBannerUI();
     applyChartModeVisibility();
@@ -2541,6 +2657,130 @@ function doPost(e) {
   }
 
   function bindEvents() {
+    // 長輩友善模式按鈕與表單事件
+    document.getElementById('enterElderModeBtn').addEventListener('click', () => setElderMode(true));
+    document.getElementById('exitElderModeBtn').addEventListener('click', () => setElderMode(false));
+
+    const copyElderLinkBtn = document.getElementById('copyElderLinkBtn');
+    if (copyElderLinkBtn) {
+      copyElderLinkBtn.addEventListener('click', () => {
+        if (isLocalOrSandboxUrl()) {
+          showToast('⚠️ 目前為本機檔案（file://），請先上傳到網路取得 https:// 網址再分享，否則手機會顯示無法讀取檔案！', true);
+          return;
+        }
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'elder');
+        if (gsConfig.url) {
+          url.searchParams.set('gs', gsConfig.url);
+        }
+        const ta = document.createElement('textarea');
+        ta.value = url.toString();
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('已複製媽媽專用大字版網址（已自動帶入試算表連線），可直接傳到 LINE！');
+      });
+    }
+
+    const elderCopyPrevBtn = document.getElementById('elderCopyPrevBtn');
+    if (elderCopyPrevBtn) {
+      elderCopyPrevBtn.addEventListener('click', () => {
+        const isAm = elderSelectedSession === 'am';
+        const prev = [...records].reverse().find(r => {
+          if (normalizeDateStr(r.date) === elderSelectedDate) return false;
+          return isAm
+            ? (r.amSbp !== null || r.amDbp !== null || r.amPulse !== null || r.amTemp !== null || r.amSpo2 !== null)
+            : (r.pmSbp !== null || r.pmDbp !== null || r.pmPulse !== null || r.pmTemp !== null || r.pmSpo2 !== null);
+        });
+        if (!prev) {
+          showToast(`找不到先前的${isAm ? '早上' : '晚上'}紀錄可帶入`, true);
+          return;
+        }
+        document.getElementById('elderInputSbp').value = isAm ? (prev.amSbp ?? '') : (prev.pmSbp ?? '');
+        document.getElementById('elderInputDbp').value = isAm ? (prev.amDbp ?? '') : (prev.pmDbp ?? '');
+        document.getElementById('elderInputPulse').value = isAm ? (prev.amPulse ?? '') : (prev.pmPulse ?? '');
+        document.getElementById('elderInputTemp').value = isAm ? (prev.amTemp ?? '') : (prev.pmTemp ?? '');
+        document.getElementById('elderInputSpo2').value = isAm ? (prev.amSpo2 ?? '') : (prev.pmSpo2 ?? '');
+        updateElderAlertStyles();
+        showToast(`已帶入 ${prev.date} ${isAm ? '早上' : '晚上'}的數值，可直接按 －/＋ 微調！`);
+      });
+    }
+
+    document.querySelectorAll('.elder-step-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.stepTarget;
+        const delta = parseFloat(btn.dataset.stepDelta || '0');
+        const inp = document.getElementById(targetId);
+        if (!inp) return;
+        const defaults = {
+          elderInputSbp: 120,
+          elderInputDbp: 80,
+          elderInputPulse: 70,
+          elderInputTemp: 36.5,
+          elderInputSpo2: 97
+        };
+        const cur = toNum(inp.value);
+        const base = cur !== null ? cur : (defaults[targetId] ?? 0);
+        const isTemp = targetId === 'elderInputTemp';
+        const nextVal = isTemp ? Math.round((base + delta) * 10) / 10 : Math.round(base + delta);
+        inp.value = isTemp ? nextVal.toFixed(1) : String(nextVal);
+        updateElderAlertStyles();
+      });
+    });
+
+    document.getElementById('elderTodayBtn').addEventListener('click', () => {
+      elderSelectedDate = getOffsetDateStr(0);
+      syncElderFormFromRecord();
+    });
+    document.getElementById('elderYesterdayBtn').addEventListener('click', () => {
+      elderSelectedDate = getOffsetDateStr(-1);
+      syncElderFormFromRecord();
+    });
+    document.getElementById('elderDatePicker').addEventListener('change', (e) => {
+      if (e.target.value) {
+        elderSelectedDate = normalizeDateStr(e.target.value);
+        syncElderFormFromRecord();
+      }
+    });
+    document.getElementById('elderAmBtn').addEventListener('click', () => {
+      elderSelectedSession = 'am';
+      syncElderFormFromRecord();
+    });
+    document.getElementById('elderPmBtn').addEventListener('click', () => {
+      elderSelectedSession = 'pm';
+      syncElderFormFromRecord();
+    });
+
+    const elderAutoAdvance = [
+      { id: 'elderInputSbp', next: 'elderInputDbp', len: 3 },
+      { id: 'elderInputDbp', next: 'elderInputPulse', len: 2 },
+      { id: 'elderInputPulse', next: 'elderInputTemp', len: 2 },
+      { id: 'elderInputTemp', next: 'elderInputSpo2', len: 4 },
+      { id: 'elderInputSpo2', next: null, len: 2 }
+    ];
+    elderAutoAdvance.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        updateElderAlertStyles();
+        const v = String(el.value || '');
+        if (item.next && v.length >= item.len && !v.endsWith('.')) {
+          const nextEl = document.getElementById(item.next);
+          if (nextEl && !nextEl.value) nextEl.focus();
+        }
+      });
+    });
+
+    document.getElementById('elderSaveBtn').addEventListener('click', saveElderEntry);
+    document.getElementById('elderRecentList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-elder-edit-date]');
+      if (!btn) return;
+      elderSelectedDate = normalizeDateStr(btn.dataset.elderEditDate);
+      syncElderFormFromRecord();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     const titleEl = document.getElementById('reportMainTitle');
     if (titleEl) {
       titleEl.addEventListener('blur', () => {
@@ -2747,14 +2987,16 @@ function doPost(e) {
       URL.revokeObjectURL(url);
     });
 
-    window.addEventListener('resize', () => renderAllCharts(getFilteredRecords()));
+    window.addEventListener('resize', () => {
+      if (!isElderMode) renderAllCharts(getFilteredRecords());
+    });
   }
 
   window.addEventListener('DOMContentLoaded', () => {
     loadInitialState();
     syncMonthSelectors(true);
     bindEvents();
-    refreshAll();
+    setElderMode(isElderMode);
     if (gsConfig.url) {
       pullFromGoogleSheet(false);
     }
