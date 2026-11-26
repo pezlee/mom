@@ -775,26 +775,6 @@
     .hidden {
       display: none !important;
     }
-
-    /* 列印專用區 */
-    #printMountArea {
-      display: none;
-    }
-
-    @media print {
-      body {
-        background: #ffffff !important;
-      }
-      #appMain {
-        display: none !important;
-      }
-      #printMountArea {
-        display: block !important;
-      }
-      @page {
-        margin: 8mm;
-      }
-    }
   </style>
 </head>
 <body>
@@ -935,7 +915,6 @@
         <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
         <button type="button" id="pushGsNowBtn" class="btn">⬆️ 寫回 Sheet</button>
         <button type="button" id="exportA4ImgBtn" class="btn btn-emerald">🖼️ 匯出圖片</button>
-        <button type="button" id="printA4Btn" class="btn">🖨️ 直接列印</button>
       </div>
     </div>
   </div>
@@ -1105,9 +1084,6 @@
   </div>
   </div><!-- /#standardReportView -->
 </div>
-
-<!-- 列印專用掛載區 -->
-<div id="printMountArea"></div>
 
 <!-- Google Sheet 連線設定彈窗 -->
 <div id="gsModal" class="modal-backdrop">
@@ -2609,7 +2585,7 @@ function doPost(e) {
     try {
       outCanvas.toBlob((blob) => {
         if (!blob) {
-          showToast('圖片產生失敗，請改用「直接列印」', true);
+          showToast('圖片產生失敗，請稍後再試', true);
           return;
         }
         const url = URL.createObjectURL(blob);
@@ -2623,7 +2599,7 @@ function doPost(e) {
         showToast('A4 高解析圖片已下載！');
       }, 'image/png');
     } catch (err) {
-      showToast('瀏覽器限制自動下載，請使用「直接列印」另存 PDF', true);
+      showToast('瀏覽器限制自動下載，請檢查下載權限設定', true);
     }
   }
 
@@ -2709,19 +2685,6 @@ function doPost(e) {
         rMax: 38.0
       });
     }
-  }
-
-  function triggerPrintA4() {
-    const filtered = getFilteredRecords();
-    if (!filtered.length) {
-      showToast('目前沒有可列印的資料', true);
-      return;
-    }
-    const mount = document.getElementById('printMountArea');
-    mount.innerHTML = '';
-    const { wrapper } = buildA4ReportElement();
-    mount.appendChild(wrapper);
-    setTimeout(() => window.print(), 120);
   }
 
   function bindEvents() {
@@ -2973,7 +2936,6 @@ function doPost(e) {
     });
 
     document.getElementById('exportA4ImgBtn').addEventListener('click', exportA4AsPng);
-    document.getElementById('printA4Btn').addEventListener('click', triggerPrintA4);
 
     document.getElementById('recordsTbody').addEventListener('change', (e) => {
       const target = e.target;
