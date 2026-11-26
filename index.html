@@ -172,36 +172,68 @@
       color: #ffffff !important;
     }
 
-    /* 長輩友善大字快速輸入模式樣式 */
+    /* 快速輸入模式樣式（手機／平板專屬） */
     .elder-panel {
+      --elder-scale: 1;
       max-width: 640px;
       margin: 0 auto 24px auto;
       background: #ffffff;
       border: 2px solid #cbd5e1;
       border-radius: 22px;
-      padding: 20px;
+      padding: 18px;
       box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
     }
 
     .elder-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 16px;
-      padding-bottom: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
       border-bottom: 2px solid #f1f5f9;
     }
 
     .elder-title {
-      font-size: 24px;
+      font-size: calc(23px * var(--elder-scale));
       font-weight: 900;
       color: #0f172a;
       margin: 0;
     }
 
+    .elder-font-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    .elder-font-btn {
+      appearance: none;
+      border: 1.5px solid #94a3b8;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .elder-font-btn.active {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
+    }
+
     .elder-step-label {
-      font-size: 18px;
+      font-size: calc(18px * var(--elder-scale));
       font-weight: 800;
       color: #1e293b;
       margin: 14px 0 8px 0;
@@ -226,8 +258,8 @@
       background: #f8fafc;
       color: #334155;
       border-radius: 16px;
-      padding: 16px 10px;
-      font-size: 20px;
+      padding: calc(14px * var(--elder-scale)) 8px;
+      font-size: calc(19px * var(--elder-scale));
       font-weight: 800;
       cursor: pointer;
       text-align: center;
@@ -258,8 +290,8 @@
       width: 100%;
       border: 2px solid #cbd5e1;
       border-radius: 16px;
-      padding: 12px 10px;
-      font-size: 18px;
+      padding: 10px 8px;
+      font-size: calc(17px * var(--elder-scale));
       font-weight: 800;
       color: #0f172a;
       background: #ffffff;
@@ -270,12 +302,12 @@
       background: #f8fafc;
       border: 2px solid #e2e8f0;
       border-radius: 18px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       transition: border-color 0.15s ease, background 0.15s ease;
     }
 
@@ -287,39 +319,51 @@
     .elder-field-info {
       flex: 1;
       min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .elder-field-name {
-      font-size: 21px;
+      font-size: calc(21px * var(--elder-scale));
       font-weight: 900;
       color: #0f172a;
-      display: block;
+      display: inline-block;
     }
 
-    .elder-field-hint {
-      font-size: 14px;
-      font-weight: 600;
-      color: #64748b;
-      display: block;
-      margin-top: 2px;
-    }
-
-    .elder-field-card.alert-box .elder-field-hint {
+    .elder-field-card.alert-box .elder-field-name {
       color: #dc2626;
-      font-weight: 800;
+    }
+
+    .elder-alert-lamp {
+      display: none;
+      font-size: calc(22px * var(--elder-scale));
+      line-height: 1;
+      animation: lampPulse 1.1s infinite ease-in-out;
+    }
+
+    .elder-field-card.alert-box .elder-alert-lamp {
+      display: inline-block;
+    }
+
+    @keyframes lampPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.18); opacity: 0.78; }
     }
 
     .elder-num-input {
-      width: 132px;
-      height: 62px;
+      width: calc(116px * var(--elder-scale));
+      min-width: 92px;
+      max-width: 145px;
+      height: calc(56px * var(--elder-scale));
       border: 2px solid #94a3b8;
       border-radius: 14px;
       background: #ffffff;
-      font-size: 28px;
+      font-size: calc(26px * var(--elder-scale));
       font-weight: 900;
       color: #0f172a;
       text-align: center;
-      padding: 4px 8px;
+      padding: 4px 6px;
     }
 
     .elder-num-input:focus {
@@ -342,13 +386,14 @@
 
     .elder-step-btn {
       appearance: none;
-      width: 44px;
-      height: 62px;
+      width: calc(42px * var(--elder-scale));
+      min-width: 36px;
+      height: calc(56px * var(--elder-scale));
       border: 2px solid #cbd5e1;
       border-radius: 14px;
       background: #ffffff;
       color: #1e293b;
-      font-size: 24px;
+      font-size: calc(22px * var(--elder-scale));
       font-weight: 900;
       cursor: pointer;
       display: inline-flex;
@@ -369,8 +414,8 @@
       background: #eff6ff;
       color: #1d4ed8;
       border-radius: 14px;
-      padding: 10px 14px;
-      font-size: 16px;
+      padding: 8px 12px;
+      font-size: calc(15px * var(--elder-scale));
       font-weight: 800;
       cursor: pointer;
     }
@@ -386,9 +431,9 @@
       border-radius: 18px;
       background: #059669;
       color: #ffffff;
-      font-size: 23px;
+      font-size: calc(22px * var(--elder-scale));
       font-weight: 900;
-      padding: 18px 20px;
+      padding: calc(16px * var(--elder-scale)) 18px;
       margin-top: 10px;
       cursor: pointer;
       box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.4);
@@ -759,23 +804,33 @@
 <body>
 
 <div id="appMain" class="container">
-  <!-- 長輩友善大字快速輸入畫面（手機／平板專屬） -->
+  <!-- 快速輸入頁面（手機／平板專屬） -->
   <div id="elderEntryView" class="elder-panel hidden">
     <div class="elder-header">
       <div>
-        <span style="display:inline-block; background:#fef3c7; color:#92400e; font-size:13px; font-weight:800; padding:3px 10px; border-radius:999px;">📱 手機／平板簡易大字版</span>
+        <span style="display:inline-block; background:#fef3c7; color:#92400e; font-size:13px; font-weight:800; padding:3px 10px; border-radius:999px;">📱 手機／平板快速輸入</span>
         <h2 class="elder-title" style="margin-top:4px;">每日量測紀錄輸入</h2>
       </div>
       <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
         <button type="button" id="exitElderModeBtn" class="btn" style="font-size:14px; padding:8px 12px;">📊 切換完整報表</button>
-        <button type="button" id="copyElderLinkBtn" class="btn" style="font-size:13px; padding:6px 10px; background:#eff6ff; border-color:#93c5fd; color:#1d4ed8;">🔗 複製長輩專用網址</button>
+        <button type="button" id="copyElderLinkBtn" class="btn" style="font-size:13px; padding:6px 10px; background:#eff6ff; border-color:#93c5fd; color:#1d4ed8;">🔗 複製快速輸入網址</button>
+      </div>
+    </div>
+
+    <!-- 字體大小調整列（因應手機系統字體放大設定） -->
+    <div class="elder-font-bar">
+      <span style="font-size:14px; font-weight:800; color:#334155;">🔤 畫面字體大小：</span>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button type="button" id="elderFontDecBtn" class="elder-font-btn" aria-label="縮小字體">A- 縮小</button>
+        <button type="button" id="elderFontResetBtn" class="elder-font-btn active" aria-label="標準字體">標準</button>
+        <button type="button" id="elderFontIncBtn" class="elder-font-btn" aria-label="放大字體">A+ 放大</button>
       </div>
     </div>
 
     <!-- 若在本機檔案開啟，提醒需部署成 https 網址才能分享給手機 -->
     <div id="localFileShareTip" class="hidden" style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; border-radius:14px; padding:12px 14px; margin-bottom:14px; font-size:14px; line-height:1.5;">
-      <strong>💡 分享給媽媽手機的小提醒：</strong><br>
-      您目前是在本機電腦檔案開啟（<code>file://</code>），直接複製網址傳到 LINE 會顯示「無法讀取檔案」。請將此 HTML 上傳到免費網頁空間（如 GitHub Pages / Netlify / Vercel）取得 <code>https://</code> 網址後再複製分享，或直接把 HTML 檔案傳給媽媽用手機瀏覽器開啟。
+      <strong>💡 分享到手機的小提醒：</strong><br>
+      您目前是在本機電腦檔案開啟（<code>file://</code>），直接複製網址傳到 LINE 會顯示「無法讀取檔案」。請將此 HTML 上傳到免費網頁空間（如 GitHub Pages / Netlify / Vercel）取得 <code>https://</code> 網址後再複製分享，或直接把 HTML 檔案傳給手機用瀏覽器開啟。
     </div>
 
     <!-- 第一步：選日期 -->
@@ -785,7 +840,7 @@
       <button type="button" id="elderYesterdayBtn" class="elder-choice-btn">昨天</button>
       <input type="date" id="elderDatePicker" class="elder-date-picker" aria-label="自選日期" />
     </div>
-    <div id="elderDateDisplay" style="margin-top:8px; font-size:16px; font-weight:800; color:#1d4ed8;">目前日期：2026/11/26</div>
+    <div id="elderDateDisplay" style="margin-top:8px; font-size:calc(16px * var(--elder-scale)); font-weight:800; color:#1d4ed8;">目前日期：2026/11/26</div>
 
     <!-- 第二步：選早上或晚上 -->
     <label class="elder-step-label">2. 請選擇時段：</label>
@@ -794,16 +849,16 @@
       <button type="button" id="elderPmBtn" class="elder-choice-btn">🌙 晚上量測</button>
     </div>
 
-    <!-- 第三步：大字輸入五項數字 -->
+    <!-- 第三步：輸入五項數字（超標自動亮紅色警示燈） -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin: 14px 0 8px 0;">
-      <label class="elder-step-label" style="margin:0;">3. 請輸入量測數字（可按 －/＋ 微調）：</label>
-      <button type="button" id="elderCopyPrevBtn" class="elder-quick-btn">📋 帶入上次同段數值</button>
+      <label class="elder-step-label" style="margin:0;">3. 請輸入量測數字：</label>
+      <button type="button" id="elderCopyPrevBtn" class="elder-quick-btn">📋 帶入上次數值</button>
     </div>
 
     <div id="elderCardSbp" class="elder-field-card">
       <div class="elder-field-info">
-        <span class="elder-field-name">收縮壓（高壓）</span>
-        <span id="elderHintSbp" class="elder-field-hint">正常參考 ≤ 140 mmHg</span>
+        <span class="elder-field-name">收縮壓</span>
+        <span class="elder-alert-lamp" title="數值超標警示" aria-label="數值超標警示">🚨</span>
       </div>
       <div class="elder-stepper-wrap">
         <button type="button" class="elder-step-btn" data-step-target="elderInputSbp" data-step-delta="-1" aria-label="收縮壓減1">－</button>
@@ -814,8 +869,8 @@
 
     <div id="elderCardDbp" class="elder-field-card">
       <div class="elder-field-info">
-        <span class="elder-field-name">舒張壓（低壓）</span>
-        <span id="elderHintDbp" class="elder-field-hint">正常參考 ≤ 90 mmHg</span>
+        <span class="elder-field-name">舒張壓</span>
+        <span class="elder-alert-lamp" title="數值超標警示" aria-label="數值超標警示">🚨</span>
       </div>
       <div class="elder-stepper-wrap">
         <button type="button" class="elder-step-btn" data-step-target="elderInputDbp" data-step-delta="-1" aria-label="舒張壓減1">－</button>
@@ -826,20 +881,20 @@
 
     <div id="elderCardPulse" class="elder-field-card">
       <div class="elder-field-info">
-        <span class="elder-field-name">脈搏（心跳）</span>
-        <span id="elderHintPulse" class="elder-field-hint">正常參考 ≤ 80 次/分</span>
+        <span class="elder-field-name">心跳</span>
+        <span class="elder-alert-lamp" title="數值超標警示" aria-label="數值超標警示">🚨</span>
       </div>
       <div class="elder-stepper-wrap">
-        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="-1" aria-label="脈搏減1">－</button>
+        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="-1" aria-label="心跳減1">－</button>
         <input type="number" inputmode="numeric" pattern="[0-9]*" id="elderInputPulse" class="elder-num-input" placeholder="68" />
-        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="1" aria-label="脈搏加1">＋</button>
+        <button type="button" class="elder-step-btn" data-step-target="elderInputPulse" data-step-delta="1" aria-label="心跳加1">＋</button>
       </div>
     </div>
 
     <div id="elderCardTemp" class="elder-field-card">
       <div class="elder-field-info">
-        <span class="elder-field-name">體溫（°C）</span>
-        <span id="elderHintTemp" class="elder-field-hint">正常參考 ≤ 37.0 °C</span>
+        <span class="elder-field-name">體溫</span>
+        <span class="elder-alert-lamp" title="數值超標警示" aria-label="數值超標警示">🚨</span>
       </div>
       <div class="elder-stepper-wrap">
         <button type="button" class="elder-step-btn" data-step-target="elderInputTemp" data-step-delta="-0.1" aria-label="體溫減0.1">－</button>
@@ -850,8 +905,8 @@
 
     <div id="elderCardSpo2" class="elder-field-card">
       <div class="elder-field-info">
-        <span class="elder-field-name">血氧濃度（%）</span>
-        <span id="elderHintSpo2" class="elder-field-hint">正常參考 ≥ 95 %</span>
+        <span class="elder-field-name">血氧</span>
+        <span class="elder-alert-lamp" title="數值偏低警示" aria-label="數值偏低警示">🚨</span>
       </div>
       <div class="elder-stepper-wrap">
         <button type="button" class="elder-step-btn" data-step-target="elderInputSpo2" data-step-delta="-1" aria-label="血氧減1">－</button>
@@ -861,13 +916,13 @@
     </div>
 
     <button type="button" id="elderSaveBtn" class="elder-save-btn">✅ 儲存這筆量測紀錄</button>
-    <div id="elderSyncNotice" style="text-align:center; font-size:14px; font-weight:700; color:#475569; margin-top:10px;">
+    <div id="elderSyncNotice" style="text-align:center; font-size:calc(14px * var(--elder-scale)); font-weight:700; color:#475569; margin-top:10px;">
       儲存後會自動保留在紀錄表中
     </div>
 
-    <!-- 最近 3 天量測紀錄核對卡（大字版） -->
+    <!-- 最近 3 天量測紀錄核對卡 -->
     <div class="elder-recent-box">
-      <div style="font-size:17px; font-weight:900; color:#0f172a; margin-bottom:8px;">📋 最近已儲存的紀錄（點選可修改）：</div>
+      <div style="font-size:calc(17px * var(--elder-scale)); font-weight:900; color:#0f172a; margin-bottom:8px;">📋 最近已儲存的紀錄（點選可修改）：</div>
       <div id="elderRecentList" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
   </div>
@@ -882,7 +937,7 @@
         <h1 id="reportMainTitle" contenteditable="true" spellcheck="false" title="點擊可直接編輯報表標題">血壓/脈搏/體溫/血氧濃度量測紀錄表</h1>
       </div>
       <div class="btn-group">
-        <button type="button" id="enterElderModeBtn" class="btn btn-amber">👵 長輩大字快速輸入</button>
+        <button type="button" id="enterElderModeBtn" class="btn btn-amber">📱 快速輸入頁面</button>
         <button type="button" id="openGsModalBtn" class="btn btn-primary">☁️ Apps Script 雙向設定</button>
         <button type="button" id="syncGsNowBtn" class="btn">↻ 立即同步</button>
         <button type="button" id="pushGsNowBtn" class="btn">⬆️ 寫回 Sheet</button>
@@ -1163,6 +1218,7 @@ function doPost(e) {
   const STORAGE_GS_KEY = 'clinic_vitals_gs_config_v1';
   const STORAGE_TITLE_KEY = 'clinic_vitals_report_title_v1';
   const STORAGE_ELDER_MODE_KEY = 'clinic_vitals_elder_mode_v1';
+  const STORAGE_ELDER_SCALE_KEY = 'clinic_vitals_elder_scale_v1';
   const DEFAULT_GS_URL = '';
   const THRESHOLDS = {
     sbp: 140,
@@ -1180,8 +1236,9 @@ function doPost(e) {
   let lastRemoteHash = '';
   let toastTimer = null;
 
-  // 長輩大字快速輸入狀態
+  // 快速輸入模式狀態
   let isElderMode = false;
+  let elderFontScale = 1.0;
   let elderSelectedDate = ''; // YYYY/M/D
   let elderSelectedSession = 'am'; // 'am' | 'pm'
 
@@ -1292,13 +1349,19 @@ function doPost(e) {
         localStorage.setItem(STORAGE_GS_KEY, JSON.stringify(gsConfig));
       }
       const savedElder = localStorage.getItem(STORAGE_ELDER_MODE_KEY);
-      if (urlParams.get('mode') === 'elder' || savedElder === '1') {
+      const modeParam = urlParams.get('mode');
+      if (modeParam === 'elder' || modeParam === 'quick' || savedElder === '1') {
         isElderMode = true;
+      }
+      const savedScale = parseFloat(localStorage.getItem(STORAGE_ELDER_SCALE_KEY) || '');
+      if (Number.isFinite(savedScale) && savedScale >= 0.75 && savedScale <= 1.35) {
+        elderFontScale = savedScale;
       }
     } catch (e) {
       console.warn('讀取本機快取失敗', e);
     }
 
+    applyElderFontScale(elderFontScale, false);
     elderSelectedDate = getOffsetDateStr(0);
     elderSelectedSession = new Date().getHours() < 15 ? 'am' : 'pm';
   }
@@ -1325,7 +1388,27 @@ function doPost(e) {
     return proto === 'file:' || proto === 'blob:' || proto === 'about:' || href.startsWith('null');
   }
 
-  /* ================= 長輩友善大字快速輸入邏輯 ================= */
+  /* ================= 快速輸入模式邏輯 ================= */
+  function applyElderFontScale(scale, persist = true) {
+    elderFontScale = Math.round(Math.max(0.75, Math.min(1.3, scale)) * 100) / 100;
+    const panel = document.getElementById('elderEntryView');
+    if (panel) {
+      panel.style.setProperty('--elder-scale', String(elderFontScale));
+    }
+    const decBtn = document.getElementById('elderFontDecBtn');
+    const rstBtn = document.getElementById('elderFontResetBtn');
+    const incBtn = document.getElementById('elderFontIncBtn');
+    if (decBtn) decBtn.classList.toggle('active', elderFontScale < 0.98);
+    if (rstBtn) rstBtn.classList.toggle('active', Math.abs(elderFontScale - 1.0) < 0.02);
+    if (incBtn) incBtn.classList.toggle('active', elderFontScale > 1.02);
+
+    if (persist) {
+      try {
+        localStorage.setItem(STORAGE_ELDER_SCALE_KEY, String(elderFontScale));
+      } catch (e) {}
+    }
+  }
+
   function setElderMode(enabled) {
     isElderMode = !!enabled;
     try {
@@ -1349,29 +1432,25 @@ function doPost(e) {
 
   function updateElderAlertStyles() {
     const checks = [
-      { id: 'elderInputSbp', card: 'elderCardSbp', hint: 'elderHintSbp', type: 'sbp', okText: '正常參考 ≤ 140 mmHg', warnText: '⚠️ 偏高（超過 140）' },
-      { id: 'elderInputDbp', card: 'elderCardDbp', hint: 'elderHintDbp', type: 'dbp', okText: '正常參考 ≤ 90 mmHg', warnText: '⚠️ 偏高（超過 90）' },
-      { id: 'elderInputPulse', card: 'elderCardPulse', hint: 'elderHintPulse', type: 'pulse', okText: '正常參考 ≤ 80 次/分', warnText: '⚠️ 偏快（超過 80）' },
-      { id: 'elderInputTemp', card: 'elderCardTemp', hint: 'elderHintTemp', type: 'temp', okText: '正常參考 ≤ 37.0 °C', warnText: '⚠️ 偏高（超過 37.0）' }
+      { id: 'elderInputSbp', card: 'elderCardSbp', type: 'sbp' },
+      { id: 'elderInputDbp', card: 'elderCardDbp', type: 'dbp' },
+      { id: 'elderInputPulse', card: 'elderCardPulse', type: 'pulse' },
+      { id: 'elderInputTemp', card: 'elderCardTemp', type: 'temp' }
     ];
     checks.forEach(c => {
       const inp = document.getElementById(c.id);
       const card = document.getElementById(c.card);
-      const hint = document.getElementById(c.hint);
-      if (!inp || !card || !hint) return;
+      if (!inp || !card) return;
       const over = isAlertVal(c.type, inp.value);
       card.classList.toggle('alert-box', over);
-      hint.textContent = over ? c.warnText : c.okText;
     });
 
     const spo2Inp = document.getElementById('elderInputSpo2');
     const spo2Card = document.getElementById('elderCardSpo2');
-    const spo2Hint = document.getElementById('elderHintSpo2');
-    if (spo2Inp && spo2Card && spo2Hint) {
+    if (spo2Inp && spo2Card) {
       const val = toNum(spo2Inp.value);
       const low = val !== null && val < 95;
       spo2Card.classList.toggle('alert-box', low);
-      spo2Hint.textContent = low ? '⚠️ 血氧偏低（低於 95%）' : '正常參考 ≥ 95 %';
     }
   }
 
@@ -1424,15 +1503,15 @@ function doPost(e) {
       return;
     }
     box.innerHTML = recent.map(r => {
-      const amStr = (r.amSbp || r.amDbp || r.amPulse) ? `早 ${r.amSbp ?? '-'}/${r.amDbp ?? '-'} (脈${r.amPulse ?? '-'})` : '早 尚未填寫';
-      const pmStr = (r.pmSbp || r.pmDbp || r.pmPulse) ? `晚 ${r.pmSbp ?? '-'}/${r.pmDbp ?? '-'} (脈${r.pmPulse ?? '-'})` : '晚 尚未填寫';
+      const amStr = (r.amSbp || r.amDbp || r.amPulse) ? `早 ${r.amSbp ?? '-'}/${r.amDbp ?? '-'} (心跳${r.amPulse ?? '-'})` : '早 尚未填寫';
+      const pmStr = (r.pmSbp || r.pmDbp || r.pmPulse) ? `晚 ${r.pmSbp ?? '-'}/${r.pmDbp ?? '-'} (心跳${r.pmPulse ?? '-'})` : '晚 尚未填寫';
       return `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:14px; padding:10px 12px;">
           <div>
-            <div style="font-size:17px; font-weight:900; color:#0f172a;">${r.date}</div>
-            <div style="font-size:14px; color:#334155; font-weight:600;">${amStr} ｜ ${pmStr}</div>
+            <div style="font-size:calc(17px * var(--elder-scale)); font-weight:900; color:#0f172a;">${r.date}</div>
+            <div style="font-size:calc(14px * var(--elder-scale)); color:#334155; font-weight:600;">${amStr} ｜ ${pmStr}</div>
           </div>
-          <button type="button" class="btn" data-elder-edit-date="${r.date}" style="font-size:15px; padding:8px 12px; font-weight:800;">修改</button>
+          <button type="button" class="btn" data-elder-edit-date="${r.date}" style="font-size:calc(15px * var(--elder-scale)); padding:8px 12px; font-weight:800;">修改</button>
         </div>
       `;
     }).join('');
@@ -1858,7 +1937,7 @@ function doPost(e) {
     if (filtered.length === 0) {
       grid.innerHTML = `
         <div class="kpi-card" style="grid-column: 1 / -1; text-align:center; padding:24px; color:#64748b;">
-          目前檢視區間尚無量測紀錄，請先設定 Google Sheet 連線或點擊「👵 長輩大字快速輸入」新增紀錄。
+          目前檢視區間尚無量測紀錄，請先設定 Google Sheet 連線或點擊「📱 快速輸入頁面」新增紀錄。
         </div>`;
       return;
     }
@@ -2657,9 +2736,22 @@ function doPost(e) {
   }
 
   function bindEvents() {
-    // 長輩友善模式按鈕與表單事件
+    // 快速輸入頁面按鈕與表單事件
     document.getElementById('enterElderModeBtn').addEventListener('click', () => setElderMode(true));
     document.getElementById('exitElderModeBtn').addEventListener('click', () => setElderMode(false));
+
+    document.getElementById('elderFontDecBtn').addEventListener('click', () => {
+      applyElderFontScale(elderFontScale - 0.1, true);
+      showToast(`已縮小畫面字體（${Math.round(elderFontScale * 100)}%）`);
+    });
+    document.getElementById('elderFontResetBtn').addEventListener('click', () => {
+      applyElderFontScale(1.0, true);
+      showToast('已恢復標準畫面字體（100%）');
+    });
+    document.getElementById('elderFontIncBtn').addEventListener('click', () => {
+      applyElderFontScale(elderFontScale + 0.1, true);
+      showToast(`已放大畫面字體（${Math.round(elderFontScale * 100)}%）`);
+    });
 
     const copyElderLinkBtn = document.getElementById('copyElderLinkBtn');
     if (copyElderLinkBtn) {
@@ -2669,7 +2761,7 @@ function doPost(e) {
           return;
         }
         const url = new URL(window.location.href);
-        url.searchParams.set('mode', 'elder');
+        url.searchParams.set('mode', 'quick');
         if (gsConfig.url) {
           url.searchParams.set('gs', gsConfig.url);
         }
@@ -2679,7 +2771,7 @@ function doPost(e) {
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showToast('已複製媽媽專用大字版網址（已自動帶入試算表連線），可直接傳到 LINE！');
+        showToast('已複製快速輸入頁面網址（已自動帶入試算表連線），可直接傳到 LINE！');
       });
     }
 
