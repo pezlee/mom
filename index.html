@@ -940,14 +940,9 @@
     </div>
   </div>
 
-  <!-- Google Sheet 連線狀態與開放編輯列 -->
+  <!-- Google Sheet 連線狀態橫幅 -->
   <div id="gsBanner" class="sync-banner disconnected">
-    <div style="flex:1; min-width:260px;">
-      <div id="gsStatusText" style="font-weight:700;">⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定</div>
-    </div>
-    <div class="btn-group">
-      <span style="font-size:12px; color:#475569;">手動同步模式（需更新時請點「立即同步」）</span>
-    </div>
+    <div id="gsStatusText" style="font-weight:700;">⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定</div>
   </div>
 
   <!-- 檢視控制列 -->
@@ -1625,8 +1620,8 @@ function doPost(e) {
 
     if (gsConfig.url) {
       banner.className = 'sync-banner connected';
-      const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式（Apps Script）' : '即時讀取模式（Published CSV）';
-      textEl.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}（網址已隱藏於雙向設定）｜目前共 ${records.length} 筆資料`;
+      const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式' : '即時讀取模式';
+      textEl.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜目前共 ${records.length} 筆資料`;
     } else {
       banner.className = 'sync-banner disconnected';
       textEl.textContent = '⚠️ 尚未設定 Google Sheet 連線網址，請點擊右上角「Apps Script 雙向設定」進行設定';
@@ -1792,7 +1787,6 @@ function doPost(e) {
       }
 
       const parsed = parseMatrixToRecords(matrix);
-      const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
 
       if (parsed.length === 0) {
         if (!silent) showToast('連線成功，但試算表內尚無有效的日期與數值資料', true);
@@ -1816,8 +1810,8 @@ function doPost(e) {
       }
 
       if (statusText) {
-        const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式（Apps Script）' : '即時讀取模式（Published CSV）';
-        statusText.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜最後同步：${nowStr}（共 ${records.length} 筆）`;
+        const modeLabel = isAppsScriptUrl(gsConfig.url) ? '雙向同步模式' : '即時讀取模式';
+        statusText.textContent = `☁️ 已連線至 Google Sheet｜${modeLabel}｜目前共 ${records.length} 筆資料`;
       }
     } catch (err) {
       if (!silent) {
@@ -1867,10 +1861,9 @@ function doPost(e) {
         body: jsonBody
       });
       lastRemoteHash = JSON.stringify(records);
-      const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
       const statusText = document.getElementById('gsStatusText');
       if (statusText) {
-        statusText.textContent = `☁️ 已連線至 Google Sheet｜雙向同步模式（Apps Script）｜最後寫回：${nowStr}（共 ${records.length} 筆）`;
+        statusText.textContent = `☁️ 已連線至 Google Sheet｜雙向同步模式｜目前共 ${records.length} 筆資料`;
       }
       if (manual) {
         showToast(`已送出 ${records.length} 筆資料寫回 Google Sheet`);
